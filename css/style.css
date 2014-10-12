@@ -1,0 +1,40 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 05-sep-2014, 14:52:46
+    Author     : Dalton
+*/
+
+strong#titulo{
+    text-align: center;
+    font-family: arial;
+    font-size: 20px;
+    color: '#157fcc';
+}
+
+strong#subtitulo{
+    text-align: left;
+    font-size: 15px;
+    color: white;
+}
+
+#map-canvas {
+    height: 100%;
+}
+
+.icon-category {background-image: url(../img/categorias.png) !important;}
+.icon-author {background-image: url(../img/autor.png) !important;}
+.icon-admin {background-image: url(../img/admin.png) !important;}
+.icon-help {background-image: url(../img/help.png) !important;}
+.icon-user {background-image: url(../img/usuarios.png) !important;}
+.icon-wall {background-image: url(../img/muros.png) !important;}
+.icon-district {background-image: url(../img/sector.png) !important;}
+.icon-add {background-image: url(../img/add.png) !important;}
+.icon-reset {background-image: url(../img/reset.png) !important;}
+.icon-cancel {background-image: url(../img/cross.gif) !important;}
+.icon-map {background-image: url(../img/map.jpg) !important;}
+.icon-route {background-image: url(../img/rutas.png) !important;}
+.icon-person {background-image: url(../img/user.gif) !important;}
