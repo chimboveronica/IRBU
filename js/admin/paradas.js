@@ -1,6 +1,12 @@
 var formParadas;
 var winParadas;
-
+var id;
+var nombre;
+var image;
+var direccion;
+var referencia;
+var latitud;
+var longitud;
 
 Ext.onReady(function() {
 
@@ -15,19 +21,42 @@ Ext.onReady(function() {
                         title: '<b>Datos Paradas</b>',
                         collapsible: true,
                         layout: 'anchor',
-                        items: [
+                        items: [{
+                                fieldLabel: 'Img',
+                                xtype: 'textfield',
+                                name: 'image',
+                                id: 'img'
+                            },
                             {
                                 xtype: 'combobox',
                                 fieldLabel: 'Nombre',
                                 afterLabelTextTpl: required,
                                 name: 'nombre',
-//                                store: gridStore,
+                                store: storeParadas1,
                                 valueField: 'id',
                                 displayField: 'nombre',
                                 queryMode: 'local',
                                 allowBlank: false,
                                 blankText: 'Este campo es obligaorio',
-                                emptyText: 'Seleccionar Opción...'
+                                emptyText: 'Seleccionar Opción...',
+                                listeners: {
+                                    select: function(combo, records, eOpts) {
+                                        id = records[0].data.id;
+                                        if (id !== ' ') {
+                                            formParadas.down('#create').enable();
+                                            formParadas.down('#clear').enable();
+                                            formParadas.down('#update').disable();
+                                            formParadas.down('#destroy').enable();
+                                            formParadas.down('[name=image]').setValue(records[0].data.dir_img);
+                                            formParadas.down('[name=direccion]').setValue(records[0].data.direccion);
+                                            formParadas.down('[name=referencia]').setValue(records[0].data.referencia);
+                                            formParadas.down('[name=latitud]').setValue(records[0].data.lat);
+                                            formParadas.down('[name=longitud]').setValue(records[0].data.lon);
+                                            formParadas.down('[name=labelImage]').setSrc('img/datap/' + records[0].data.dir_img);
+
+                                        }
+                                    }
+                                }
                             },
                             {
                                 xtype: 'form',
@@ -48,10 +77,10 @@ Ext.onReady(function() {
                                             change: function(thisObj, value, eOpts) {
                                                 var form = this.up('form').getForm();
                                                 form.submit({
-                                                    url: 'php/upload/uploadUsuario.php',
+                                                    url: 'php/upload/uploadParadas.php',
                                                     success: function(form, action) {
-                                                        formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + action.result['img']);
-                                                        //formAdminPerson.down('[name=imagePerson]').setValue(action.result['img']);
+                                                        formParadas.down('[name=labelImage]').setSrc('img/datap/' + action.result['img']);
+                                                        formParadas.down('[name=image]').setValue(action.result['img']);
                                                         thisObj.setValue(action.result['img']);
                                                     },
                                                     failure: function(form, action) {
@@ -129,51 +158,124 @@ Ext.onReady(function() {
                 ui: 'footer',
                 items: ['->', {
                         iconCls: 'icon-update',
-                        itemId: 'update',
+                        itemId: 'create',
                         text: 'crear',
                         tooltip: 'Crear Parada',
                         handler: function() {
-                            var form = formParadas.getForm();
-                            if (form.isValid()) {
-                                form.submit({
-                                    url: 'php/admin/station/create.php',
-                                    waitTitle: 'Procesando...',
-                                    waitMsg: 'Obteniendo Información',
-                                    success: function(form, action) {
-                                        console.log("true");
+                            nombre = formParadas.down('[name=nombre]').getValue();
+                            image = formParadas.down('[name=image]').getValue();
+                            referencia = formParadas.down('[name=referencia]').getValue();
+                            latitud = formParadas.down('[name=latitud]').getValue();
+                            longitud = formParadas.down('[name=longitud]').getValue();
 
-
-                                    },
-                                    failure: function(form, action) {
-                                        console.log("action");
-                                        Ext.MessageBox.show({
-                                            title: 'Información',
-                                            msg: action.result.msg,
-                                            buttons: Ext.MessageBox.OK,
-                                            icon: Ext.MessageBox.INFO
-                                        });
-
-                                    }
-                                });
-
-                            }
+                            Ext.Ajax.request({
+                                url: 'php/admin/station/create.php',
+                                params: {
+                                    nombre: nombre,
+                                    image: image,
+                                    direccion: direccion,
+                                    referencia: referencia,
+                                    latitud: latitud,
+                                    longitud: longitud
+                                },
+                                method: 'POST',
+                                failure: function(form, action) {
+                                    Ext.MessageBox.show({
+                                        title: 'Error...',
+                                        msg: 'No se pudo guardar',
+                                        buttons: Ext.MessageBox.ERROR,
+                                        icon: Ext.MessageBox.ERROR
+                                    });
+                                },
+                                success: function(form, action) {
+                                    storeParadas1.reload();
+                                    Ext.example.msg("Mensaje", 'Datos insertados correctamente');
+                                    formParadas.getForm().reset();
+                                    formParadas.down('#create').enable();
+                                    formParadas.down('#clear').enable();
+                                    formParadas.down('#update').disable();
+                                    formParadas.down('#destroy').disable();
+                                }
+                            });
                         }
-
-
-
                     }, {
                         iconCls: 'icon-cancel',
                         tooltip: 'Cancelar',
+                        itemId: 'update',
                         text: 'Actualizar',
                         handler: function() {
-                            winParadas.hide();
+                            if (id !== ' ') {
+                                nombre = formParadas.down('[name=nombre]').getValue();
+                                image = formParadas.down('[name=image]').getValue();
+                                direccion = formParadas.down('[name=direccion]').getValue();
+                                referencia = formParadas.down('[name=referencia]').getValue();
+                                latitud = formParadas.down('[name=latitud]').getValue();
+                                longitud = formParadas.down('[name=longitud]').getValue();
+
+                                Ext.Ajax.request({
+                                    url: 'php/admin/station/update.php',
+                                    params: {
+                                        id: id,
+                                        nombre: nombre,
+                                        image: image,
+                                        direccion: direccion,
+                                        referencia: referencia,
+                                        latitud: latitud,
+                                        longitud: longitud
+                                    },
+                                    method: 'POST',
+                                    failure: function(form, action) {
+                                        Ext.MessageBox.show({
+                                            title: 'Error...',
+                                            msg: 'No fue posible Actualizar Estado',
+                                            buttons: Ext.MessageBox.ERROR,
+                                            icon: Ext.MessageBox.ERROR
+                                        });
+                                    },
+                                    success: function(form, action) {
+                                        Ext.example.msg("Mensaje", 'Estado Modificado Correctamente...');
+                                        storeParadas1.reload();
+                                        formParadas.getForm().reset();
+                                        formParadas.down('#create').enable();
+                                        formParadas.down('#clear').enable();
+                                        formParadas.down('#update').disable();
+                                        formParadas.down('#destroy').disable();
+                                    }
+                                });
+                            }
                         }
                     }, {
                         iconCls: 'icon-cancel',
-                        tooltip: 'Cancelar',
-                        text: 'Eliminar',
+                        tooltip: 'Eliminar',
+                        itemId: 'destroy',
+//                        text: 'Eliminar',
                         handler: function() {
+                            Ext.Ajax.request({
+                                url: 'php/admin/station/destroy.php',
+                                params: {
+                                    id: id,
+                                },
+                                method: 'POST',
+                                failure: function(form, action) {
+                                    Ext.MessageBox.show({
+                                        title: 'Error...',
+                                        msg: 'No se pudo guardar',
+                                        buttons: Ext.MessageBox.ERROR,
+                                        icon: Ext.MessageBox.ERROR
+                                    });
+                                },
+                                success: function(form, action) {
+                                    Ext.example.msg("Mensaje", 'Datos eliminados correctamente');
+                                    storeParadas1.reload();
+                                    formParadas.down('[name=labelImage]').setSrc('img/datap/' + 'sin_img.png');
+                                    formParadas.getForm().reset();
+                                    formParadas.down('#create').enable();
+                                    formParadas.down('#clear').enable();
+                                    formParadas.down('#update').disable();
+                                    formParadas.down('#destroy').disable();
 
+                                }
+                            });
 
 
 
@@ -181,15 +283,20 @@ Ext.onReady(function() {
                         }
                     }, {
                         iconCls: 'icon-cancel',
-                        tooltip: 'Cancelar',
-                        text: 'Limpiar',
+                        tooltip: 'Limpiar',
+                        itemId: 'clear',
+//                        text: 'Limpiar',
                         handler: function() {
                             formParadas.getForm().reset();
+                            formParadas.down('#create').enable();
+                            formParadas.down('#clear').enable();
+                            formParadas.down('#update').disable();
+                            formParadas.down('#destroy').disable();
                         }
                     }, {
                         iconCls: 'icon-cancel',
                         tooltip: 'Cancelar',
-                        text: 'Cancelar',
+//                        text: 'Cancelar',
                         handler: function() {
                             winParadas.hide();
                         }
@@ -215,5 +322,11 @@ function ventanaParadas() {
         });
     }
     formParadas.getForm().reset();
+    Ext.getCmp('img').hide();
+    formParadas.down('#create').enable();
+    formParadas.down('#clear').enable();
+    formParadas.down('#update').disable();
+    formParadas.down('#destroy').disable();
+
     winParadas.show();
 }
