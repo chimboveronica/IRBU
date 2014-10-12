@@ -1,18 +1,17 @@
 <?php
 
 include ('../../../dll/config.php');
+extract($_POST);
 
 if (!$mysqli = getConectionDb()) {
     echo "{success:false, message: 'No se ha podido conectar a la Base de Datos.<br>Compruebe su conexión a Internet.'}";
 } else {
-    $requestBody = file_get_contents('php://input');
-    $json = json_decode($requestBody, true);
 
-    $destroySql = "DELETE FROM personas WHERE id_persona = ?";
+    $destroySql = "DELETE FROM irbudata.paradas  WHERE id_parada = ?";
 
     $stmt = $mysqli->prepare($destroySql);
     if ($stmt) {
-        $stmt->bind_param("i", $json["id"]);
+        $stmt->bind_param("i", $id);
         $stmt->execute();
 
         if ($stmt->affected_rows > 0) {
