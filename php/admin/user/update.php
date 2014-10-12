@@ -7,88 +7,68 @@ if (!$mysqli = getConectionDb()) {
 } else {
     $requestBody = file_get_contents('php://input');
     $json = json_decode($requestBody, true);
-
-    $setIdCompany = $setIdRolUser = $setIdPerson = $setUser = $setPass = $setActive = "";
-
-    if (isset($json["idCompanyUser"])) {
-        $setIdCompany = "id_empresa=" . $json["idCompanyUser"] . ",";
-    }
-    if (isset($json["idRolUser"])) {
-        $setIdRolUser = "id_rol_usuario=" . $json["idRolUser"] . ",";
-    }
-    if (isset($json["idPersonUser"])) {
-        $setIdPerson = "id_persona=" . $json["idPersonUser"] . ",";
-    }
-    if (isset($json["userUser"])) {
-        $setUser = "usuario='" . utf8_decode($json["userUser"]) . "',";
-    }
-    if (isset($json["passwordUser"])) {
-        $dataPass = explode(",", utf8_decode($json["passwordUser"]));
-        $passEncryption = getEncryption($dataPass[0]);
-
-        $consultaPassSql = "SELECT id_usuario FROM usuarios WHERE clave = '" . $passEncryption . "' AND id_usuario = " . $json["id"];
+    $setCedula = $setNombres = $setApellidos = $setUsuario = $setFechaNacimiento = $setImagen="";
+    if (isset($json["cedula"])){$setCedula = "cedula=" . $json["cedula"] . ",";}
+    if (isset($json["nombres"])){$setNombres = "nombres=" . $json["nombres"] . ",";}
+    if (isset($json["apellidos"])){$setApellidos = "apellidos=" . $json["apellidos"] . ",";}
+    if (isset($json["usuario"])){$setUsuario = "usuario='" . utf8_decode($json["usuario"]) . "',";}
+    if (isset($json["fecha_nacimiento"])){$setFechaNacimiento = "fecha_nacimiento='" . utf8_decode($json["fecha_nacimiento"]) . "',";}
+    if (isset($json["imagen"])){$setImagen = "imagen='" . utf8_decode($json["imagen"]) . "',";}
+     if (isset($json["clave"])) {
+        $partes = $json["clave"];
+        $clave = $partes[0];
+        $salt = "KR@D@C";
+        $encriptClave = md5(md5(md5($clave) . md5($salt)));
+        $setClave = "clave='$encriptClave',";
+        $consultaPassSql = "select id_usuario from usuarios where clave = '" .  $encriptClave . "' and id_usuario = ". $json["id"];
         $resultPass = $mysqli->query($consultaPassSql);
         if ($resultPass->num_rows > 0) {
             $setPass = "";
         } else {
-            $setPass = "clave='" . $passEncryption . "',";
+            $setPass = "clave='" . $encriptClave . "',";
         }
     }
-    if (isset($json["activeUser"])) {
-        $setActive = "activo=" . $json["activeUser"] . ",";
-    }
-
     $setId = "id_usuario = " . $json["id"];
-
-    if ($setUser != "") {
-        $existeSql = "SELECT usuario FROM usuarios WHERE usuario='" . $json["userUser"] . "'";
-
+    if ($setUsuario != "") {
+        $existeSql = "select usuario from irbudata.usuarios where usuario='" . $json["usuario"] . "'";
         $result = $mysqli->query($existeSql);
-
         if ($result->num_rows > 0) {
-            echo "{success:false, message:'El Usuario ya se encuentra en uso por otra persona.'}";
+            echo "{success:false, message:'El Usuario ya se encuentra en uso por otra persona.',state: true}";
         } else {
-            $updateSql = "UPDATE usuarios "
-                    . "SET $setIdCompany$setIdRolUser$setIdPerson$setUser$setPass$setActive$setId "
-                    . "WHERE id_usuario = ?";
-
+         $updateSql = "UPDATE irbudata.usuarios 
+            SET $setNombres$setApellidos$setId
+            WHERE id_usuario = ?";
             $stmt = $mysqli->prepare($updateSql);
             if ($stmt) {
                 $stmt->bind_param("i", $json["id"]);
                 $stmt->execute();
 
                 if ($stmt->affected_rows > 0) {
-                    echo "{success:true, message: 'Datos del Usuario, actualizados correctamente.'}";
+                    echo "{success:true, message:'Datos actualizados correctamente.',state: true}";
                 } else {
-                    echo "{success:false, message: 'No se pudo actualizar los Datos del Usuario.'}";
+                    echo "{success:true, message: 'Problemas al actualizar en la tabla.',state: false}";
                 }
                 $stmt->close();
             } else {
-                echo "{success:false, message: 'Problemas en la construcción de la consulta.'}";
+                echo "{success:true, message: 'Problemas en la construcción de la consulta.',state: false}";
             }
         }
     } else {
-        if ($setPass != "") {
-            $updateSql = "UPDATE usuarios "
-                    . "SET $setIdCompany$setIdRolUser$setIdPerson$setUser$setPass$setActive$setId "
-                    . "WHERE id_usuario = ?";
-
-            $stmt = $mysqli->prepare($updateSql);
-            if ($stmt) {
-                $stmt->bind_param("i", $json["id"]);
-                $stmt->execute();
-
-                if ($stmt->affected_rows > 0) {
-                    echo "{success:true, message: 'Datos del Usuario, actualizados correctamente.'}";
-                } else {
-                    echo "{success:false, message: 'No se pudo actualizar los Datos del Usuario.'}";
-                }
-                $stmt->close();
+        $updateSql = "UPDATE irbudata.usuarios 
+            SET $setNombres$setApellidos$setId
+            WHERE id_usuario = ?";
+        $stmt = $mysqli->prepare($updateSql);
+        if ($stmt) {
+            $stmt->bind_param("i", $json["id"]);
+            $stmt->execute();
+            if ($stmt->affected_rows > 0) {
+                echo "{success:true, message:'Datos actualizados correctamente.',state: false}";
             } else {
-                echo "{success:false, message: 'Problemas en la construcción de la consulta.'}";
+                echo "{success:true, message: 'Problemas al actualizar en la tabla.',state: false}";
             }
+            $stmt->close();
         } else {
-            echo "{success:false, message: 'El Usuario ya tiene esa contraseña, por favor ingresar una nueva.'}";
+            echo "{success:true, message: 'Problemas en la construcción de la consulta.',state: false}";
         }
     }
     $mysqli->close();

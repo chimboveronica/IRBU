@@ -17,13 +17,13 @@ if (!$mysqli = getConectionDb()) {
     while ($myrow = $result->fetch_assoc()) {
         $objJson .= "{"
                 . "idUsuario:" . $myrow["id_usuario"] . ","
-                . "documentPerson:'" . $myrow["cedula"] . "',"
-                . "namePerson:'" . utf8_encode($myrow["nombres"]) . "',"
-                . "surnamePerson:'" . utf8_encode($myrow["apellidos"]) . "',"
-                . "dateOfBirthPerson:'" . $myrow["fecha_nacimiento"] . "',"
-                . "userPerson:'" . $myrow["usuario"] . "',"
+                . "cedula:'" . $myrow["cedula"] . "',"
+                . "nombres:'" . utf8_encode($myrow["nombres"]) . "',"
+                . "apellidos:'" . utf8_encode($myrow["apellidos"]) . "',"
+                . "fechaNacimiento:'" . $myrow["fecha_nacimiento"] . "',"
+                . "usuario:'" . $myrow["usuario"] . "',"
                 . "imagePerson:'" . $myrow["imagen"] . "',"
-                . "passwordPerson:'" . $myrow["clave"] . "'},";
+                . "clave:'" . $myrow["clave"] . "'},";
     }
     $objJson .= "]}";
     echo $objJson;

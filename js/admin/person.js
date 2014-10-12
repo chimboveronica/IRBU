@@ -1,8 +1,7 @@
 var winAdminPerson;
 var formAdminPerson;
 var gridAdminPerson;
-var labelDatos;
-
+var gridStore;
 Ext.onReady(function() {
 
     var edadDate = Ext.Date.subtract(new Date(), Ext.Date.YEAR, 18);
@@ -11,17 +10,16 @@ Ext.onReady(function() {
         extend: 'Ext.data.Model',
         fields: [
             {name: 'id', mapping: 'idUsuario', type: 'int'},
-            {name: 'documentPerson', type: 'string'},
-            {name: 'namePerson', type: 'string'},
-            {name: 'surnamePerson', type: 'string'},
-            {name: 'dateOfBirthPerson', type: 'date', dateFormat: 'c'},
-            {name: 'userPerson', type: 'string'},
-            {name: 'passwordPerson', type: 'string'},
-            {name: 'imagePerson', type: 'string'},
+            {name: 'cedula', type: 'string'},
+            {name: 'nombres', type: 'string'},
+            {name: 'apellidos', type: 'string'},
+            {name: 'usuario', type: 'string'},
+            {name: 'clave', type: 'string'},
+            {name: 'imagePerson', type: 'string'}
         ]
     });
 
-    var gridStore = Ext.create('Ext.data.Store', {
+    gridStore = Ext.create('Ext.data.Store', {
         autoLoad: true,
         autoSync: true,
         model: 'DataPerson',
@@ -57,8 +55,8 @@ Ext.onReady(function() {
         listeners: {
             write: function(store, operation, eOpts) {
                 onResetPerson();
-                storePerson.reload();
-                Ext.example.msg("Mensaje", operation.getResultSet().message);
+                gridStore.reload();
+                Ext.example.msg("Mensaje", operation._resultSet.message);
             }
         }
     });
@@ -68,7 +66,6 @@ Ext.onReady(function() {
         padding: '10 10 10 10',
         region: 'center',
         width: '60%',
-//        title: 'Ingresar Datos del Vehículo',
         bodyPadding: '10 10 10 10',
         margin: '0 0 3 0',
         layout: 'hbox',
@@ -99,21 +96,27 @@ Ext.onReady(function() {
                                         xtype: 'combobox',
                                         fieldLabel: 'Cedula',
                                         afterLabelTextTpl: required,
-                                        name: 'documentPerson',
+                                        name: 'cedula',
                                         store: gridStore,
-                                        valueField: 'id',
-                                        displayField: 'documentPerson',
+                                        valueField: 'idUsuario',
+                                        displayField: 'cedula',
                                         queryMode: 'local',
                                         allowBlank: false,
                                         blankText: 'Este campo es obligaorio',
-                                        emptyText: 'Seleccionar Opción...'
+                                        emptyText: 'Seleccionar Opción...',
+                                        listeners: {
+                                            select: function(combo, records, eOpts) {
+                                                console.log(records[0]);
+                                                setActiveRecords(records[0] || null);
+                                            }
+                                        }
                                     },
                                     {
                                         xtype: 'textfield',
                                         fieldLabel: 'Nombres',
                                         afterLabelTextTpl: required,
-                                        name: 'namePerson',
-                                        vtype: 'alphanum',
+                                        name: 'nombres',
+//                                        vtype: 'alphanum',
                                         allowBlank: false,
                                         blankText: 'Este campo es obligatorio',
                                         emptyText: 'Ingresar Nombres...'
@@ -122,27 +125,27 @@ Ext.onReady(function() {
                                         xtype: 'textfield',
                                         fieldLabel: 'Apellidos',
                                         afterLabelTextTpl: required,
-                                        name: 'surnamePerson',
-                                        vtype: 'alphanum',
+                                        name: 'apellidos',
+//                                        vtype: 'alphanum',
                                         allowBlank: false,
                                         blankText: 'Este campo es obligatorio',
                                         emptyText: 'Ingresar Apellidos...'
 
+                                    },
+                                    {
+                                        xtype: 'datefield',
+                                        fieldLabel: '<b>Fecha de Nacimiento</b>',
+                                        afterLabelTextTpl: required,
+                                        blankText: 'Este campo es obligatorio',
+                                        editable: false,
+                                        value: edadDate,
+                                        maxValue: edadDate,
+                                        name: 'fechaNacimiento',
+                                        format: 'y-m-d',
+                                        emptyText: 'Ingresar Fecha...',
+                                        minValue: '1950-01-01',
                                     }
                                     , {
-                                        xtype: 'datefield',
-                                        afterLabelTextTpl: required,
-                                        fieldLabel: 'Fecha de Nacimiento',
-                                        name: 'dateOfBirthPerson',
-                                        allowBlank: false,
-                                        blankText: 'Este campo es obligatorio',
-                                        maxValue: edadDate,
-                                        value: edadDate,
-                                        minValue: '1950-01-01',
-                                        invalidText: 'Fecha de nacimienro inválida',
-                                        format: 'Y-m-d',
-                                        emptyText: 'Ingresar Fecha...'
-                                    }, {
                                         xtype: 'fieldset',
                                         title: '<b>Usuario</b>',
                                         defaultType: 'textfield',
@@ -155,78 +158,38 @@ Ext.onReady(function() {
                                             {
                                                 fieldLabel: 'Usuario',
                                                 afterLabelTextTpl: required,
-                                                name: 'userPerson',
+                                                name: 'usuario',
                                                 vtype: 'alphanum',
                                                 allowBlank: false,
                                                 blankText: 'Este campo es obligatorio',
                                                 emptyText: 'Ingresar Usuario...'
-
+                                            },
+                                            {
+                                                xtype: 'textfield',
+                                                fieldLabel: '<b>Contraseña</b>',
+                                                afterLabelTextTpl: required,
+                                                blankText: 'Este campo es Obligatorio',
+                                                name: 'clave',
+                                                itemId: 'pass',
+                                                allowBlank: false,
+                                                inputType: 'password',
+                                                emptyText: 'Ingresar Contraseña...',
                                             }, {
-                                                xtype: 'fieldset',
-                                                title: '<b>Editar Contraseña</b>',
-                                                collapsible: true,
-                                                defaultType: 'textfield',
-                                                layout: 'anchor',
-                                                defaults: {
-                                                    anchor: '100%'
-                                                },
-                                                items: [{
-                                                        xtype: 'radiogroup',
-                                                        columns: 2,
-                                                        vertical: true,
-                                                        padding: '0 0 10 50',
-                                                        items: [
-                                                            {boxLabel: 'No', name: 'rbpass', inputValue: 1},
-                                                            {boxLabel: 'Si', name: 'rbpass', inputValue: 2, checked: true}
-                                                        ],
-                                                        listeners: {
-                                                            change: function(field, newValue, oldValue) {
-                                                                switch (newValue['rbpass']) {
-                                                                    case 1:
-                                                                        Ext.getCmp('txt-pass-user').disable();
-                                                                        Ext.getCmp('txt-confirm-pass-user').disable();
-                                                                        break;
-                                                                    case 2:
-                                                                        Ext.getCmp('txt-pass-user').enable();
-                                                                        Ext.getCmp('txt-confirm-pass-user').enable();
-                                                                        break;
-                                                                }
-                                                            }
-                                                        }
-                                                    }, , {
-                                                        id: 'txt-pass-user',
-                                                        fieldLabel: 'Contraseña',
-                                                        afterLabelTextTpl: required,
-                                                        name: 'passwordPerson',
-                                                        vtype: 'alphanum',
-                                                        itemId: 'pass',
-                                                        allowBlank: false,
-                                                        disabled: true,
-                                                        blankText: 'Este campo es obligatorio',
-                                                        inputType: 'password',
-                                                        emptyText: 'Ingresar Contraseña...',
-                                                        minLength: 3,
-                                                        minLengthText: 'La longitud mínima de la contraseña es de 3 caracteres',
-                                                        maxLength: 45,
-                                                        maxLengthText: 'La longitud máxima de la contraseña es de 45 caracteres'
-                                                    }, {
-                                                        id: 'txt-confirm-pass-user',
-                                                        fieldLabel: 'Confirmar Contraseña',
-                                                        afterLabelTextTpl: required,
-                                                        name: 'passwordPerson',
-                                                        allowBlank: false,
-                                                        disabled: true,
-                                                        blankText: 'Este campo es obligatorio',
-                                                        inputType: 'password',
-                                                        emptyText: 'Ingresar Contraseña Nuevamente...',
-                                                        vtype: 'password',
-                                                        initialPassField: 'pass'
-                                                    }]
+                                                xtype: 'textfield',
+                                                fieldLabel: '<b>Confirmar Contraseña</b>',
+                                                afterLabelTextTpl: required,
+                                                blankText: 'Este campo es Obligatorio',
+                                                name: 'clave',
+                                                allowBlank: false,
+                                                inputType: 'password',
+                                                emptyText: 'Ingresar Contraseña Nuevamente...',
+                                                vtype: 'password',
+                                                initialPassField: 'pass'
                                             }
-
                                         ]}
                                 ]}]
-                    }, {
+                    },
+                    {
                         xtype: 'form',
                         layout: 'anchor',
                         margin: '0 0 0 8',
@@ -247,8 +210,10 @@ Ext.onReady(function() {
                                         form.submit({
                                             url: 'php/upload/uploadUsuario.php',
                                             success: function(form, action) {
-                                                formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + action.result['img']);
-                                                //formAdminPerson.down('[name=imagePerson]').setValue(action.result['img']);
+                                                formAdminPerson.down('[name=labelImage]').setSrc('img/fotos/' + action.result['img']);
+                                                formAdminPerson.down('[name=imagePerson]').setValue(action.result['img']);
+//                                                //formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + action.result['img']);
+//                                                formAdminPerson.down('[name=imagePerson]').setValue(action.result['img']);
                                                 thisObj.setValue(action.result['img']);
                                             },
                                             failure: function(form, action) {
@@ -257,7 +222,8 @@ Ext.onReady(function() {
                                         });
                                     }
                                 }
-                            }, {
+                            },
+                            {
                                 xtype: 'image',
                                 name: 'labelImage',
                                 src: 'img/sin_img.png',
@@ -275,375 +241,27 @@ Ext.onReady(function() {
                 ]
 
             }],
+        listeners: {
+            create: function(form, data) {
+                gridStore.insert(0, data);
+                gridStore.reload();
+            }
+        },
         dockedItems: [{
                 xtype: 'toolbar',
                 dock: 'bottom',
                 ui: 'footer',
-                items: ['->', {
-                        iconCls: 'icon-update',
-                        itemId: 'update',
-                        text: 'Ingresar',
-                        tooltip: 'Ingresar',
-                        handler: function() {
-
-                            var form = formAdminPerson.getForm();
-                            if (form.isValid()) {
-                                form.submit({
-                                    url: 'php/admin/user/create.php',
-                                    waitTitle: 'Procesando...',
-                                    waitMsg: 'Obteniendo Información',
-                                    success: function(form, action) {
-                                        console.log("true");
-                                        // window.open('index_admin.php');
-                                        location.href = 'index_admin.php';
-
-                                    },
-                                    failure: function(form, action) {
-                                        console.log("action");
-                                        Ext.MessageBox.show({
-                                            title: 'Información',
-                                            msg: action.result.msg,
-                                            buttons: Ext.MessageBox.OK,
-                                            icon: Ext.MessageBox.INFO
-                                        });
-
-                                    }
-                                });
-
-                            }
-                        }
-
-
-
-                    }, {
-                        iconCls: 'icon-cancel',
-                        tooltip: 'Cancelar',
-                        text: 'Cancelar',
-                        handler: function() {
-                            winusuario.hide();
-                        }
-                    }]
+                items: ['->',
+                    {iconCls: 'icon-updat', itemId: 'update', text: 'Actualizar', scope: this, tooltip: 'Actualizar Datos', handler: onUpdatePerson},
+                    {iconCls: 'icon-add', itemId: 'create', text: 'Crear', scope: this, tooltip: 'Crear Persona', handler: onCreatePerson},
+                    {iconCls: 'icon-reset', itemId: 'delete', text: 'Eliminar', scope: this, tooltip: 'Eliminar Persona', handler: onDeletePerson},
+                    {iconCls: 'limpiar', text: 'Limpiar', tooltip: 'Limpiar Campos', scope: this, handler: onResetPerson},
+                    {iconCls: 'icon-cancel', tooltip: 'Cancelar', scope: this, handler: function() {
+                            winAdminPerson.hide();
+                        }}
+                ]
             }]
-
-
-
     });
-
-
-
-
-
-//    var formAdminPerson1 = Ext.create('Ext.form.Panel', {
-//        items: [
-//            {xtype: 'form',
-////                bodyStyle: "background-image: url('img/user.gif'); background-repeat:no-repeat; width='10' height='10'",
-//
-//                region: 'center',
-//                width: '60%',
-////        title: 'Ingresar Datos del Vehículo',
-//                activeRecord: null,
-//                bodyPadding: '10 10 10 10',
-//                margin: '0 0 3 0',
-//                layout: 'hbox',
-//                defaults: {
-////                    padding: '0 15 0 0',
-//                    baseCls: 'x-plain',
-//                    layout: 'vbox',
-//                    //defaultType: 'textfield',
-//                    defaults: {
-//                        labelWidth: 100
-//                    }
-//                },
-//                items: [{
-//                        items: [
-//                            {
-//                                xtype: 'fieldset',
-//                                title: '<b>Datos Personales</b>',
-//                                collapsible: true,
-//                                layout: 'anchor',
-//                                defaults: {
-//                                    anchor: '100%'
-//                                },
-//                                items: [
-//                                    {
-//                                        xtype: 'combobox',
-//                                        fieldLabel: 'Cedula',
-//                                        afterLabelTextTpl: required,
-//                                        name: 'documentPerson',
-//                                        store: gridStore,
-//                                        valueField: 'id',
-//                                        displayField: 'documentPerson',
-//                                        queryMode: 'local',
-//                                        allowBlank: false,
-//                                        blankText: 'Este campo es obligaorio',
-//                                        emptyText: 'Seleccionar Opción...'
-//                                    },
-//                                    {
-//                                        xtype: 'textfield',
-//                                        fieldLabel: 'Nombres',
-//                                        afterLabelTextTpl: required,
-//                                        name: 'namePerson',
-//                                        vtype: 'alphanum',
-//                                        allowBlank: false,
-//                                        blankText: 'Este campo es obligatorio',
-//                                        emptyText: 'Ingresar Nombres...'
-//
-//                                    }, {
-//                                        xtype: 'textfield',
-//                                        fieldLabel: 'Apellidos',
-//                                        afterLabelTextTpl: required,
-//                                        name: 'surnamePerson',
-//                                        vtype: 'alphanum',
-//                                        allowBlank: false,
-//                                        blankText: 'Este campo es obligatorio',
-//                                        emptyText: 'Ingresar Apellidos...'
-//
-//                                    }
-//                                    , {
-//                                        xtype: 'datefield',
-//                                        afterLabelTextTpl: required,
-//                                        fieldLabel: 'Fecha de Nacimiento',
-//                                        name: 'dateOfBirthPerson',
-//                                        allowBlank: false,
-//                                        blankText: 'Este campo es obligatorio',
-//                                        maxValue: edadDate,
-//                                        value: edadDate,
-//                                        minValue: '1950-01-01',
-//                                        invalidText: 'Fecha de nacimienro inválida',
-//                                        format: 'Y-m-d',
-//                                        emptyText: 'Ingresar Fecha...'
-//                                    }, {
-//                                        xtype: 'fieldset',
-//                                        title: '<b>Usuario</b>',
-//                                        defaultType: 'textfield',
-//                                        collapsible: true,
-//                                        layout: 'anchor',
-//                                        defaults: {
-//                                            anchor: '30%'
-//                                        },
-//                                        items: [
-//                                            {
-//                                                fieldLabel: 'Usuario',
-//                                                afterLabelTextTpl: required,
-//                                                name: 'userPerson',
-//                                                vtype: 'alphanum',
-//                                                allowBlank: false,
-//                                                blankText: 'Este campo es obligatorio',
-//                                                emptyText: 'Ingresar Usuario...'
-//
-//                                            }, {
-//                                                xtype: 'fieldset',
-//                                                title: '<b>Editar Contraseña</b>',
-//                                                collapsible: true,
-//                                                defaultType: 'textfield',
-//                                                layout: 'anchor',
-//                                                defaults: {
-//                                                    anchor: '100%'
-//                                                },
-//                                                items: [{
-//                                                        xtype: 'radiogroup',
-//                                                        columns: 2,
-//                                                        vertical: true,
-//                                                        padding: '0 0 10 50',
-//                                                        items: [
-//                                                            {boxLabel: 'No', name: 'rbpass', inputValue: 1},
-//                                                            {boxLabel: 'Si', name: 'rbpass', inputValue: 2, checked: true}
-//                                                        ],
-//                                                        listeners: {
-//                                                            change: function(field, newValue, oldValue) {
-//                                                                switch (newValue['rbpass']) {
-//                                                                    case 1:
-//                                                                        Ext.getCmp('txt-pass-user').disable();
-//                                                                        Ext.getCmp('txt-confirm-pass-user').disable();
-//                                                                        break;
-//                                                                    case 2:
-//                                                                        Ext.getCmp('txt-pass-user').enable();
-//                                                                        Ext.getCmp('txt-confirm-pass-user').enable();
-//                                                                        break;
-//                                                                }
-//                                                            }
-//                                                        }
-//                                                    }, , {
-//                                                        id: 'txt-pass-user',
-//                                                        fieldLabel: 'Contraseña',
-//                                                        afterLabelTextTpl: required,
-//                                                        name: 'passwordPerson',
-//                                                        vtype: 'alphanum',
-//                                                        itemId: 'pass',
-//                                                        allowBlank: false,
-//                                                        disabled: true,
-//                                                        blankText: 'Este campo es obligatorio',
-//                                                        inputType: 'password',
-//                                                        emptyText: 'Ingresar Contraseña...',
-//                                                        minLength: 3,
-//                                                        minLengthText: 'La longitud mínima de la contraseña es de 3 caracteres',
-//                                                        maxLength: 45,
-//                                                        maxLengthText: 'La longitud máxima de la contraseña es de 45 caracteres'
-//                                                    }, {
-//                                                        id: 'txt-confirm-pass-user',
-//                                                        fieldLabel: 'Confirmar Contraseña',
-//                                                        afterLabelTextTpl: required,
-//                                                        name: 'passwordPerson',
-//                                                        allowBlank: false,
-//                                                        disabled: true,
-//                                                        blankText: 'Este campo es obligatorio',
-//                                                        inputType: 'password',
-//                                                        emptyText: 'Ingresar Contraseña Nuevamente...',
-//                                                        vtype: 'password',
-//                                                        initialPassField: 'pass'
-//                                                    }]
-//                                            }
-//
-//                                        ]}
-//                                ]}]
-//                    }, {
-//                        xtype: 'form',
-//                        layout: 'anchor',
-//                        margin: '0 0 0 8',
-//                        items: [{
-//                                xtype: 'filefield',
-//                                name: 'imageFile',
-//                                emptyText: "Máximo 2MB",
-//                                fieldLabel: "Foto",
-//                                width: 250,
-//                                buttonConfig: {
-//                                    iconCls: 'icon-upload',
-//                                    text: '',
-//                                    tooltip: 'Escoger imagen'
-//                                },
-//                                listeners: {
-//                                    change: function(thisObj, value, eOpts) {
-//                                        var form = this.up('form').getForm();
-//                                        form.submit({
-//                                            url: 'php/upload/uploadUsuario.php',
-//                                            success: function(form, action) {
-//                                                formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + action.result['img']);
-//                                                //formAdminPerson.down('[name=imagePerson]').setValue(action.result['img']);
-//                                                thisObj.setValue(action.result['img']);
-//                                            },
-//                                            failure: function(form, action) {
-//                                                Ext.Msg.alert('Error', 'No se pudo subir la imagen');
-//                                            }
-//                                        });
-//                                    }
-//                                }
-//                            }, {
-//                                xtype: 'image',
-//                                name: 'labelImage',
-//                                src: 'img/sin_img.png',
-//                                height: 100,
-//                                border: 2,
-//                                margin: '0 0 0 105',
-//                                anchor: '60%',
-//                                style: {
-//                                    borderColor: '#157fcc',
-//                                    borderStyle: 'solid'
-//                                }
-//                            }
-//                        ]
-//                    }
-//                ]}],
-//        dockedItems: [{
-//                xtype: 'toolbar',
-//                dock: 'bottom',
-//                ui: 'footer',
-//                items: ['->', {
-//                        iconCls: 'icon-update',
-//                        itemId: 'update',
-//                        text: 'Ingresar',
-//                        tooltip: 'Ingresar',
-//                        handler: function() {
-//
-//                            var form = formAdminPerson.getForm();
-//                            if (form.isValid()) {
-//                                form.submit({
-//                                    url: 'php/admin/user/create.php',
-//                                    waitTitle: 'Procesando...',
-//                                    waitMsg: 'Obteniendo Información',
-//                                    success: function(form, action) {
-//                                        console.log("true");
-//                                        // window.open('index_admin.php');
-//                                        location.href = 'index_admin.php';
-//
-//                                    },
-//                                    failure: function(form, action) {
-//                                        console.log("action");
-//                                        Ext.MessageBox.show({
-//                                            title: 'Información',
-//                                            msg: action.result.msg,
-//                                            buttons: Ext.MessageBox.OK,
-//                                            icon: Ext.MessageBox.INFO
-//                                        });
-//
-//                                    }
-//                                });
-//
-//                            }
-//                        }
-//
-//
-//
-//                    }, {
-//                        iconCls: 'icon-cancel',
-//                        tooltip: 'Cancelar',
-//                        text: 'Cancelar',
-//                        handler: function() {
-//                            winusuario.hide();
-//                        }
-//                    }]
-//            }],
-////        dockedItems: [{
-////                xtype: 'toolbar',
-////                dock: 'bottom',
-////                ui: 'footer',
-////                items: ['->', {
-////                        iconCls: 'icon-update',
-////                        itemId: 'update',
-////                        text: 'Actualizar',
-////                        disabled: true,
-////                        tooltip: 'Actualizar',
-////                        handler: onUpdatePerson
-////                    }, {
-////                        iconCls: 'icon-add',
-////                        text: 'Crear',
-////                        itemId: 'create',
-////                        tooltip: 'Crear',
-////                        handler: function() {
-////                            var form = formAdminPerson.getForm();
-////                            if (form.isValid()) {
-////                                form.submit({
-////                                    url: 'php/admin/user/create.php',
-////                                    success: function(form, action) {
-////                                        Ext.Msg.alert('Error', 'Persona Guardada');
-////
-////                                    },
-////                                    failure: function(form, action) {
-////                                        Ext.Msg.alert('Error', 'No se pudo guardar');
-////                                    }
-////                                });
-////                            }
-////                        }
-////                    }, {
-////                        iconCls: 'icon-delete',
-////                        text: 'Eliminar',
-////                        disabled: true,
-////                        itemId: 'delete',
-////                        tooltip: 'Eliminar Persona',
-////                        handler: onDeletePerson
-////                    }, {
-////                        iconCls: 'icon-reset',
-////                        text: 'Limpiar',
-////                        tooltip: 'Limpiar Campos',
-////                        handler: onResetPerson
-////                    }, {
-////                        iconCls: 'icon-cancel',
-////                        tooltip: 'Cancelar',
-////                        handler: function() {
-////                            winAdminPerson.hide();
-////                        }
-////                    }]
-////            }]
-//    });
 });
 function showWinAdminPerson() {
     if (!winAdminPerson) {
@@ -653,14 +271,13 @@ function showWinAdminPerson() {
             iconCls: 'icon-person',
             resizable: false,
             width: 450,
-            height: 650,
+            height: 545,
             closeAction: 'hide',
             plain: false,
             items: [{
                     layout: 'border',
                     bodyPadding: 5,
                     items: [
-//                        gridAdminPerson,
                         formAdminPerson
                     ]
                 }]
@@ -670,11 +287,17 @@ function showWinAdminPerson() {
     winAdminPerson.show();
 }
 
-function setActiveRecordPerson(record) {
+function setActiveRecords(record) {
     formAdminPerson.activeRecord = record;
-    formAdminPerson.down('#update').enable();
-    formAdminPerson.down('#create').disable();
-    formAdminPerson.getForm().loadRecord(record);
+    if (record) {
+        formAdminPerson.down('#update').enable();
+        formAdminPerson.down('#create').disable();
+        formAdminPerson.down('#delete').enable();
+        formAdminPerson.getForm().loadRecord(record);
+    } else {
+        formAdminPerson.down('#update').disable();
+        formAdminPerson.getForm().reset();
+    }
 }
 
 function onUpdatePerson() {
@@ -695,14 +318,20 @@ function onCreatePerson() {
     if (form.isValid()) {
         formAdminPerson.fireEvent('create', formAdminPerson, form.getValues());
         formAdminPerson.down('#update').disable();
+        form.reset();
+        gridStore.reload();
     } else {
-        Ext.example.msg("Alerta", 'Llenar los campos obligatorios.');
+        Ext.example.msg("Alerta", 'Llenar los campos marcados en rojo, correctamente ');
+
     }
 }
 
 function onResetPerson() {
+    setActiveRecords(null);
+    formAdminPerson.down('#delete').disable();
+    formAdminPerson.down('#create').enable();
     formAdminPerson.getForm().reset();
-//    gridAdminPerson.getView().deselect(gridAdminPerson.getSelection());
+    formAdminPerson.getForm().reset();
 }
 
 function onDeletePerson() {
