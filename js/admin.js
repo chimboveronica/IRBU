@@ -6,9 +6,7 @@
 
 
 var required = '<span style="color:red;font-weight:bold" data-qtip="Required">*</span>';
-Ext.Loader.setConfig({
-    enabled: true
-});
+
 Ext.Loader.setPath('Ext.ux', 'extjs-docs-5.0.0/extjs-build/build/examples/ux');
 Ext.require([
     'Ext.grid.*',

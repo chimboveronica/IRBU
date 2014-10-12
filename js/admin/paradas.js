@@ -15,7 +15,12 @@ Ext.onReady(function() {
                         title: '<b>Datos Paradas</b>',
                         collapsible: true,
                         layout: 'anchor',
-                        items: [
+                        items: [{
+                                fieldLabel: 'Img',
+                                xtype: 'textfield',
+                                name: 'image',
+                                id: 'img'
+                            },
                             {
                                 xtype: 'combobox',
                                 fieldLabel: 'Nombre',
@@ -48,10 +53,10 @@ Ext.onReady(function() {
                                             change: function(thisObj, value, eOpts) {
                                                 var form = this.up('form').getForm();
                                                 form.submit({
-                                                    url: 'php/upload/uploadUsuario.php',
+                                                    url: 'php/upload/uploadParadas.php',
                                                     success: function(form, action) {
-                                                        formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + action.result['img']);
-                                                        //formAdminPerson.down('[name=imagePerson]').setValue(action.result['img']);
+                                                        formParadas.down('[name=labelImage]').setSrc('img/datap/' + action.result['img']);
+                                                        formParadas.down('[name=image]').setValue(action.result['img']);
                                                         thisObj.setValue(action.result['img']);
                                                     },
                                                     failure: function(form, action) {
@@ -139,19 +144,19 @@ Ext.onReady(function() {
                                     url: 'php/admin/station/create.php',
                                     waitTitle: 'Procesando...',
                                     waitMsg: 'Obteniendo Información',
-                                    success: function(form, action) {
-                                        console.log("true");
+                                    failure: function(form, action) {
+                                        console.log(action);
+                                        console.log(action.result.state);
+                                        console.log(action.result);
 
+                                        Ext.example.msg("Mensaje", 'Parada creada correctamente...');
 
                                     },
-                                    failure: function(form, action) {
-                                        console.log("action");
-                                        Ext.MessageBox.show({
-                                            title: 'Información',
-                                            msg: action.result.msg,
-                                            buttons: Ext.MessageBox.OK,
-                                            icon: Ext.MessageBox.INFO
-                                        });
+                                    success: function(form, action) {
+                                        console.log('No');
+
+                                        Ext.example.msg("Mensaje", 'Datos Incorrectos...');
+
 
                                     }
                                 });
@@ -215,5 +220,7 @@ function ventanaParadas() {
         });
     }
     formParadas.getForm().reset();
+    Ext.getCmp('img').hide();
+
     winParadas.show();
 }
