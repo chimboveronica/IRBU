@@ -65,217 +65,216 @@ Ext.onReady(function() {
 
 
     formAdminPerson = Ext.create('Ext.form.Panel', {
+        padding: '10 10 10 10',
         region: 'center',
         width: '60%',
 //        title: 'Ingresar Datos del Vehículo',
-        activeRecord: null,
         bodyPadding: '10 10 10 10',
         margin: '0 0 3 0',
         layout: 'hbox',
-        defaults: {
+        items: [
+            {xtype: 'form',
+                defaults: {
 //                    padding: '0 15 0 0',
-            baseCls: 'x-plain',
-            layout: 'vbox',
-            //defaultType: 'textfield',
-            defaults: {
-                labelWidth: 100
-            }
-        },
-        items: [{
-                items: [
-                    {
-                        xtype: 'fieldset',
-                        title: '<b>Datos Personales</b>',
-                        collapsible: true,
-                        layout: 'anchor',
-                        defaults: {
-                            anchor: '100%'
-                        },
+                    baseCls: 'x-plain',
+                    layout: 'vbox',
+                    //defaultType: 'textfield',
+                    defaults: {
+                        labelWidth: 100
+                    }
+                },
+//                bodyStyle: "background-image: url('img/user.gif'); background-repeat:no-repeat; width='10' height='10'",
+                items: [{
                         items: [
                             {
-                                xtype: 'combobox',
-                                fieldLabel: 'Cedula',
-                                afterLabelTextTpl: required,
-                                name: 'documentPerson',
-                                store: gridStore,
-                                valueField: 'id',
-                                displayField: 'documentPerson',
-                                queryMode: 'local',
-                                allowBlank: false,
-                                blankText: 'Este campo es obligaorio',
-                                emptyText: 'Seleccionar Opción...'
-                            },
-                            {
-                                xtype: 'textfield',
-                                fieldLabel: 'Nombres',
-                                afterLabelTextTpl: required,
-                                name: 'namePerson',
-                                vtype: 'alphanum',
-                                allowBlank: false,
-                                blankText: 'Este campo es obligatorio',
-                                emptyText: 'Ingresar Nombres...'
-
-                            }, {
-                                xtype: 'textfield',
-                                fieldLabel: 'Apellidos',
-                                afterLabelTextTpl: required,
-                                name: 'surnamePerson',
-                                vtype: 'alphanum',
-                                allowBlank: false,
-                                blankText: 'Este campo es obligatorio',
-                                emptyText: 'Ingresar Apellidos...'
-
-                            }
-                            , {
-                                xtype: 'datefield',
-                                afterLabelTextTpl: required,
-                                fieldLabel: 'Fecha de Nacimiento',
-                                name: 'dateOfBirthPerson',
-                                allowBlank: false,
-                                blankText: 'Este campo es obligatorio',
-                                maxValue: edadDate,
-                                value: edadDate,
-                                minValue: '1950-01-01',
-                                invalidText: 'Fecha de nacimienro inválida',
-                                format: 'Y-m-d',
-                                emptyText: 'Ingresar Fecha...'
-                            }, {
                                 xtype: 'fieldset',
-                                title: '<b>Usuario</b>',
-                                defaultType: 'textfield',
+                                title: '<b>Datos Personales</b>',
                                 collapsible: true,
                                 layout: 'anchor',
                                 defaults: {
-                                    anchor: '30%'
+                                    anchor: '100%'
                                 },
                                 items: [
                                     {
-                                        fieldLabel: 'Usuario',
+                                        xtype: 'combobox',
+                                        fieldLabel: 'Cedula',
                                         afterLabelTextTpl: required,
-                                        name: 'userPerson',
+                                        name: 'documentPerson',
+                                        store: gridStore,
+                                        valueField: 'id',
+                                        displayField: 'documentPerson',
+                                        queryMode: 'local',
+                                        allowBlank: false,
+                                        blankText: 'Este campo es obligaorio',
+                                        emptyText: 'Seleccionar Opción...'
+                                    },
+                                    {
+                                        xtype: 'textfield',
+                                        fieldLabel: 'Nombres',
+                                        afterLabelTextTpl: required,
+                                        name: 'namePerson',
                                         vtype: 'alphanum',
                                         allowBlank: false,
                                         blankText: 'Este campo es obligatorio',
-                                        emptyText: 'Ingresar Usuario...'
+                                        emptyText: 'Ingresar Nombres...'
 
                                     }, {
+                                        xtype: 'textfield',
+                                        fieldLabel: 'Apellidos',
+                                        afterLabelTextTpl: required,
+                                        name: 'surnamePerson',
+                                        vtype: 'alphanum',
+                                        allowBlank: false,
+                                        blankText: 'Este campo es obligatorio',
+                                        emptyText: 'Ingresar Apellidos...'
+
+                                    }
+                                    , {
+                                        xtype: 'datefield',
+                                        afterLabelTextTpl: required,
+                                        fieldLabel: 'Fecha de Nacimiento',
+                                        name: 'dateOfBirthPerson',
+                                        allowBlank: false,
+                                        blankText: 'Este campo es obligatorio',
+                                        maxValue: edadDate,
+                                        value: edadDate,
+                                        minValue: '1950-01-01',
+                                        invalidText: 'Fecha de nacimienro inválida',
+                                        format: 'Y-m-d',
+                                        emptyText: 'Ingresar Fecha...'
+                                    }, {
                                         xtype: 'fieldset',
-                                        title: '<b>Editar Contraseña</b>',
-                                        collapsible: true,
+                                        title: '<b>Usuario</b>',
                                         defaultType: 'textfield',
+                                        collapsible: true,
                                         layout: 'anchor',
                                         defaults: {
-                                            anchor: '100%'
+                                            anchor: '30%'
                                         },
-                                        items: [{
-                                                xtype: 'radiogroup',
-                                                columns: 2,
-                                                vertical: true,
-                                                padding: '0 0 10 50',
-                                                items: [
-                                                    {boxLabel: 'No', name: 'rbpass', inputValue: 1},
-                                                    {boxLabel: 'Si', name: 'rbpass', inputValue: 2, checked: true}
-                                                ],
-                                                listeners: {
-                                                    change: function(field, newValue, oldValue) {
-                                                        switch (newValue['rbpass']) {
-                                                            case 1:
-                                                                Ext.getCmp('txt-pass-user').disable();
-                                                                Ext.getCmp('txt-confirm-pass-user').disable();
-                                                                break;
-                                                            case 2:
-                                                                Ext.getCmp('txt-pass-user').enable();
-                                                                Ext.getCmp('txt-confirm-pass-user').enable();
-                                                                break;
-                                                        }
-                                                    }
-                                                }
-                                            }, , {
-                                                id: 'txt-pass-user',
-                                                fieldLabel: 'Contraseña',
+                                        items: [
+                                            {
+                                                fieldLabel: 'Usuario',
                                                 afterLabelTextTpl: required,
-                                                name: 'passwordPerson',
+                                                name: 'userPerson',
                                                 vtype: 'alphanum',
-                                                itemId: 'pass',
                                                 allowBlank: false,
-                                                disabled: true,
                                                 blankText: 'Este campo es obligatorio',
-                                                inputType: 'password',
-                                                emptyText: 'Ingresar Contraseña...',
-                                                minLength: 3,
-                                                minLengthText: 'La longitud mínima de la contraseña es de 3 caracteres',
-                                                maxLength: 45,
-                                                maxLengthText: 'La longitud máxima de la contraseña es de 45 caracteres'
-                                            }, {
-                                                id: 'txt-confirm-pass-user',
-                                                fieldLabel: 'Confirmar Contraseña',
-                                                afterLabelTextTpl: required,
-                                                name: 'passwordPerson',
-                                                allowBlank: false,
-                                                disabled: true,
-                                                blankText: 'Este campo es obligatorio',
-                                                inputType: 'password',
-                                                emptyText: 'Ingresar Contraseña Nuevamente...',
-                                                vtype: 'password',
-                                                initialPassField: 'pass'
-                                            }]
-                                    }
+                                                emptyText: 'Ingresar Usuario...'
 
-                                ]}
-                        ]}]
-            }, {
-                xtype: 'form',
-                layout: 'anchor',
-                margin: '0 0 0 8',
-                items: [{
-                        xtype: 'filefield',
-                        name: 'imageFile',
-                        emptyText: "Máximo 2MB",
-                        fieldLabel: "Foto",
-                        width: 250,
-                        buttonConfig: {
-                            iconCls: 'icon-upload',
-                            text: '',
-                            tooltip: 'Escoger imagen'
-                        },
-                        listeners: {
-                            change: function(thisObj, value, eOpts) {
-                                var form = this.up('form').getForm();
-                                form.submit({
-                                    url: 'php/upload/uploadUsuario.php',
-                                    success: function(form, action) {
-                                        formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + action.result['img']);
-                                        formAdminPerson.down('[name=imagePerson]').setValue(action.result['img']);
-                                        thisObj.setValue(action.result['img']);
-                                    },
-                                    failure: function(form, action) {
-                                        Ext.Msg.alert('Error', 'No se pudo subir la imagen');
-                                    }
-                                });
-                            }
-                        }
+                                            }, {
+                                                xtype: 'fieldset',
+                                                title: '<b>Editar Contraseña</b>',
+                                                collapsible: true,
+                                                defaultType: 'textfield',
+                                                layout: 'anchor',
+                                                defaults: {
+                                                    anchor: '100%'
+                                                },
+                                                items: [{
+                                                        xtype: 'radiogroup',
+                                                        columns: 2,
+                                                        vertical: true,
+                                                        padding: '0 0 10 50',
+                                                        items: [
+                                                            {boxLabel: 'No', name: 'rbpass', inputValue: 1},
+                                                            {boxLabel: 'Si', name: 'rbpass', inputValue: 2, checked: true}
+                                                        ],
+                                                        listeners: {
+                                                            change: function(field, newValue, oldValue) {
+                                                                switch (newValue['rbpass']) {
+                                                                    case 1:
+                                                                        Ext.getCmp('txt-pass-user').disable();
+                                                                        Ext.getCmp('txt-confirm-pass-user').disable();
+                                                                        break;
+                                                                    case 2:
+                                                                        Ext.getCmp('txt-pass-user').enable();
+                                                                        Ext.getCmp('txt-confirm-pass-user').enable();
+                                                                        break;
+                                                                }
+                                                            }
+                                                        }
+                                                    }, , {
+                                                        id: 'txt-pass-user',
+                                                        fieldLabel: 'Contraseña',
+                                                        afterLabelTextTpl: required,
+                                                        name: 'passwordPerson',
+                                                        vtype: 'alphanum',
+                                                        itemId: 'pass',
+                                                        allowBlank: false,
+                                                        disabled: true,
+                                                        blankText: 'Este campo es obligatorio',
+                                                        inputType: 'password',
+                                                        emptyText: 'Ingresar Contraseña...',
+                                                        minLength: 3,
+                                                        minLengthText: 'La longitud mínima de la contraseña es de 3 caracteres',
+                                                        maxLength: 45,
+                                                        maxLengthText: 'La longitud máxima de la contraseña es de 45 caracteres'
+                                                    }, {
+                                                        id: 'txt-confirm-pass-user',
+                                                        fieldLabel: 'Confirmar Contraseña',
+                                                        afterLabelTextTpl: required,
+                                                        name: 'passwordPerson',
+                                                        allowBlank: false,
+                                                        disabled: true,
+                                                        blankText: 'Este campo es obligatorio',
+                                                        inputType: 'password',
+                                                        emptyText: 'Ingresar Contraseña Nuevamente...',
+                                                        vtype: 'password',
+                                                        initialPassField: 'pass'
+                                                    }]
+                                            }
+
+                                        ]}
+                                ]}]
                     }, {
-                        xtype: 'image',
-                        name: 'labelImage',
-                        src: 'img/sin_img.png',
-                        height: 100,
-                        border: 2,
-                        margin: '0 0 0 105',
-                        anchor: '60%',
-                        style: {
-                            borderColor: '#157fcc',
-                            borderStyle: 'solid'
-                        }
+                        xtype: 'form',
+                        layout: 'anchor',
+                        margin: '0 0 0 8',
+                        items: [{
+                                xtype: 'filefield',
+                                name: 'imageFile',
+                                emptyText: "Máximo 2MB",
+                                fieldLabel: "Foto",
+                                width: 250,
+                                buttonConfig: {
+                                    iconCls: 'icon-upload',
+                                    text: '',
+                                    tooltip: 'Escoger imagen'
+                                },
+                                listeners: {
+                                    change: function(thisObj, value, eOpts) {
+                                        var form = this.up('form').getForm();
+                                        form.submit({
+                                            url: 'php/upload/uploadUsuario.php',
+                                            success: function(form, action) {
+                                                formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + action.result['img']);
+                                                //formAdminPerson.down('[name=imagePerson]').setValue(action.result['img']);
+                                                thisObj.setValue(action.result['img']);
+                                            },
+                                            failure: function(form, action) {
+                                                Ext.Msg.alert('Error', 'No se pudo subir la imagen');
+                                            }
+                                        });
+                                    }
+                                }
+                            }, {
+                                xtype: 'image',
+                                name: 'labelImage',
+                                src: 'img/sin_img.png',
+                                height: 100,
+                                border: 2,
+                                margin: '0 0 0 105',
+                                anchor: '60%',
+                                style: {
+                                    borderColor: '#157fcc',
+                                    borderStyle: 'solid'
+                                }
+                            }
+                        ]
                     }
                 ]
-            }
-        ],
-        listeners: {
-            create: function(form, data) {
-                gridStore.insert(0, data);
-                gridStore.reload();
-            }
-        },
+
+            }],
         dockedItems: [{
                 xtype: 'toolbar',
                 dock: 'bottom',
@@ -283,51 +282,368 @@ Ext.onReady(function() {
                 items: ['->', {
                         iconCls: 'icon-update',
                         itemId: 'update',
-                        text: 'Actualizar',
-                        disabled: true,
-                        tooltip: 'Actualizar',
-                        handler: onUpdatePerson
-                    }, {
-                        iconCls: 'icon-add',
-                        text: 'Crear',
-                        itemId: 'create',
-                        tooltip: 'Crear',
+                        text: 'Ingresar',
+                        tooltip: 'Ingresar',
                         handler: function() {
+
                             var form = formAdminPerson.getForm();
                             if (form.isValid()) {
                                 form.submit({
                                     url: 'php/admin/user/create.php',
+                                    waitTitle: 'Procesando...',
+                                    waitMsg: 'Obteniendo Información',
                                     success: function(form, action) {
-                                        Ext.Msg.alert('Error', 'Persona Guardada');
+                                        console.log("true");
+                                        // window.open('index_admin.php');
+                                        location.href = 'index_admin.php';
 
                                     },
                                     failure: function(form, action) {
-                                        Ext.Msg.alert('Error', 'No se pudo guardar');
+                                        console.log("action");
+                                        Ext.MessageBox.show({
+                                            title: 'Información',
+                                            msg: action.result.msg,
+                                            buttons: Ext.MessageBox.OK,
+                                            icon: Ext.MessageBox.INFO
+                                        });
+
                                     }
                                 });
+
                             }
                         }
-                    }, {
-                        iconCls: 'icon-delete',
-                        text: 'Eliminar',
-                        disabled: true,
-                        itemId: 'delete',
-                        tooltip: 'Eliminar Persona',
-                        handler: onDeletePerson
-                    }, {
-                        iconCls: 'icon-reset',
-                        text: 'Limpiar',
-                        tooltip: 'Limpiar Campos',
-                        handler: onResetPerson
+
+
+
                     }, {
                         iconCls: 'icon-cancel',
                         tooltip: 'Cancelar',
+                        text: 'Cancelar',
                         handler: function() {
-                            winAdminPerson.hide();
+                            winusuario.hide();
                         }
                     }]
             }]
+
+
+
     });
+
+
+
+
+
+//    var formAdminPerson1 = Ext.create('Ext.form.Panel', {
+//        items: [
+//            {xtype: 'form',
+////                bodyStyle: "background-image: url('img/user.gif'); background-repeat:no-repeat; width='10' height='10'",
+//
+//                region: 'center',
+//                width: '60%',
+////        title: 'Ingresar Datos del Vehículo',
+//                activeRecord: null,
+//                bodyPadding: '10 10 10 10',
+//                margin: '0 0 3 0',
+//                layout: 'hbox',
+//                defaults: {
+////                    padding: '0 15 0 0',
+//                    baseCls: 'x-plain',
+//                    layout: 'vbox',
+//                    //defaultType: 'textfield',
+//                    defaults: {
+//                        labelWidth: 100
+//                    }
+//                },
+//                items: [{
+//                        items: [
+//                            {
+//                                xtype: 'fieldset',
+//                                title: '<b>Datos Personales</b>',
+//                                collapsible: true,
+//                                layout: 'anchor',
+//                                defaults: {
+//                                    anchor: '100%'
+//                                },
+//                                items: [
+//                                    {
+//                                        xtype: 'combobox',
+//                                        fieldLabel: 'Cedula',
+//                                        afterLabelTextTpl: required,
+//                                        name: 'documentPerson',
+//                                        store: gridStore,
+//                                        valueField: 'id',
+//                                        displayField: 'documentPerson',
+//                                        queryMode: 'local',
+//                                        allowBlank: false,
+//                                        blankText: 'Este campo es obligaorio',
+//                                        emptyText: 'Seleccionar Opción...'
+//                                    },
+//                                    {
+//                                        xtype: 'textfield',
+//                                        fieldLabel: 'Nombres',
+//                                        afterLabelTextTpl: required,
+//                                        name: 'namePerson',
+//                                        vtype: 'alphanum',
+//                                        allowBlank: false,
+//                                        blankText: 'Este campo es obligatorio',
+//                                        emptyText: 'Ingresar Nombres...'
+//
+//                                    }, {
+//                                        xtype: 'textfield',
+//                                        fieldLabel: 'Apellidos',
+//                                        afterLabelTextTpl: required,
+//                                        name: 'surnamePerson',
+//                                        vtype: 'alphanum',
+//                                        allowBlank: false,
+//                                        blankText: 'Este campo es obligatorio',
+//                                        emptyText: 'Ingresar Apellidos...'
+//
+//                                    }
+//                                    , {
+//                                        xtype: 'datefield',
+//                                        afterLabelTextTpl: required,
+//                                        fieldLabel: 'Fecha de Nacimiento',
+//                                        name: 'dateOfBirthPerson',
+//                                        allowBlank: false,
+//                                        blankText: 'Este campo es obligatorio',
+//                                        maxValue: edadDate,
+//                                        value: edadDate,
+//                                        minValue: '1950-01-01',
+//                                        invalidText: 'Fecha de nacimienro inválida',
+//                                        format: 'Y-m-d',
+//                                        emptyText: 'Ingresar Fecha...'
+//                                    }, {
+//                                        xtype: 'fieldset',
+//                                        title: '<b>Usuario</b>',
+//                                        defaultType: 'textfield',
+//                                        collapsible: true,
+//                                        layout: 'anchor',
+//                                        defaults: {
+//                                            anchor: '30%'
+//                                        },
+//                                        items: [
+//                                            {
+//                                                fieldLabel: 'Usuario',
+//                                                afterLabelTextTpl: required,
+//                                                name: 'userPerson',
+//                                                vtype: 'alphanum',
+//                                                allowBlank: false,
+//                                                blankText: 'Este campo es obligatorio',
+//                                                emptyText: 'Ingresar Usuario...'
+//
+//                                            }, {
+//                                                xtype: 'fieldset',
+//                                                title: '<b>Editar Contraseña</b>',
+//                                                collapsible: true,
+//                                                defaultType: 'textfield',
+//                                                layout: 'anchor',
+//                                                defaults: {
+//                                                    anchor: '100%'
+//                                                },
+//                                                items: [{
+//                                                        xtype: 'radiogroup',
+//                                                        columns: 2,
+//                                                        vertical: true,
+//                                                        padding: '0 0 10 50',
+//                                                        items: [
+//                                                            {boxLabel: 'No', name: 'rbpass', inputValue: 1},
+//                                                            {boxLabel: 'Si', name: 'rbpass', inputValue: 2, checked: true}
+//                                                        ],
+//                                                        listeners: {
+//                                                            change: function(field, newValue, oldValue) {
+//                                                                switch (newValue['rbpass']) {
+//                                                                    case 1:
+//                                                                        Ext.getCmp('txt-pass-user').disable();
+//                                                                        Ext.getCmp('txt-confirm-pass-user').disable();
+//                                                                        break;
+//                                                                    case 2:
+//                                                                        Ext.getCmp('txt-pass-user').enable();
+//                                                                        Ext.getCmp('txt-confirm-pass-user').enable();
+//                                                                        break;
+//                                                                }
+//                                                            }
+//                                                        }
+//                                                    }, , {
+//                                                        id: 'txt-pass-user',
+//                                                        fieldLabel: 'Contraseña',
+//                                                        afterLabelTextTpl: required,
+//                                                        name: 'passwordPerson',
+//                                                        vtype: 'alphanum',
+//                                                        itemId: 'pass',
+//                                                        allowBlank: false,
+//                                                        disabled: true,
+//                                                        blankText: 'Este campo es obligatorio',
+//                                                        inputType: 'password',
+//                                                        emptyText: 'Ingresar Contraseña...',
+//                                                        minLength: 3,
+//                                                        minLengthText: 'La longitud mínima de la contraseña es de 3 caracteres',
+//                                                        maxLength: 45,
+//                                                        maxLengthText: 'La longitud máxima de la contraseña es de 45 caracteres'
+//                                                    }, {
+//                                                        id: 'txt-confirm-pass-user',
+//                                                        fieldLabel: 'Confirmar Contraseña',
+//                                                        afterLabelTextTpl: required,
+//                                                        name: 'passwordPerson',
+//                                                        allowBlank: false,
+//                                                        disabled: true,
+//                                                        blankText: 'Este campo es obligatorio',
+//                                                        inputType: 'password',
+//                                                        emptyText: 'Ingresar Contraseña Nuevamente...',
+//                                                        vtype: 'password',
+//                                                        initialPassField: 'pass'
+//                                                    }]
+//                                            }
+//
+//                                        ]}
+//                                ]}]
+//                    }, {
+//                        xtype: 'form',
+//                        layout: 'anchor',
+//                        margin: '0 0 0 8',
+//                        items: [{
+//                                xtype: 'filefield',
+//                                name: 'imageFile',
+//                                emptyText: "Máximo 2MB",
+//                                fieldLabel: "Foto",
+//                                width: 250,
+//                                buttonConfig: {
+//                                    iconCls: 'icon-upload',
+//                                    text: '',
+//                                    tooltip: 'Escoger imagen'
+//                                },
+//                                listeners: {
+//                                    change: function(thisObj, value, eOpts) {
+//                                        var form = this.up('form').getForm();
+//                                        form.submit({
+//                                            url: 'php/upload/uploadUsuario.php',
+//                                            success: function(form, action) {
+//                                                formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + action.result['img']);
+//                                                //formAdminPerson.down('[name=imagePerson]').setValue(action.result['img']);
+//                                                thisObj.setValue(action.result['img']);
+//                                            },
+//                                            failure: function(form, action) {
+//                                                Ext.Msg.alert('Error', 'No se pudo subir la imagen');
+//                                            }
+//                                        });
+//                                    }
+//                                }
+//                            }, {
+//                                xtype: 'image',
+//                                name: 'labelImage',
+//                                src: 'img/sin_img.png',
+//                                height: 100,
+//                                border: 2,
+//                                margin: '0 0 0 105',
+//                                anchor: '60%',
+//                                style: {
+//                                    borderColor: '#157fcc',
+//                                    borderStyle: 'solid'
+//                                }
+//                            }
+//                        ]
+//                    }
+//                ]}],
+//        dockedItems: [{
+//                xtype: 'toolbar',
+//                dock: 'bottom',
+//                ui: 'footer',
+//                items: ['->', {
+//                        iconCls: 'icon-update',
+//                        itemId: 'update',
+//                        text: 'Ingresar',
+//                        tooltip: 'Ingresar',
+//                        handler: function() {
+//
+//                            var form = formAdminPerson.getForm();
+//                            if (form.isValid()) {
+//                                form.submit({
+//                                    url: 'php/admin/user/create.php',
+//                                    waitTitle: 'Procesando...',
+//                                    waitMsg: 'Obteniendo Información',
+//                                    success: function(form, action) {
+//                                        console.log("true");
+//                                        // window.open('index_admin.php');
+//                                        location.href = 'index_admin.php';
+//
+//                                    },
+//                                    failure: function(form, action) {
+//                                        console.log("action");
+//                                        Ext.MessageBox.show({
+//                                            title: 'Información',
+//                                            msg: action.result.msg,
+//                                            buttons: Ext.MessageBox.OK,
+//                                            icon: Ext.MessageBox.INFO
+//                                        });
+//
+//                                    }
+//                                });
+//
+//                            }
+//                        }
+//
+//
+//
+//                    }, {
+//                        iconCls: 'icon-cancel',
+//                        tooltip: 'Cancelar',
+//                        text: 'Cancelar',
+//                        handler: function() {
+//                            winusuario.hide();
+//                        }
+//                    }]
+//            }],
+////        dockedItems: [{
+////                xtype: 'toolbar',
+////                dock: 'bottom',
+////                ui: 'footer',
+////                items: ['->', {
+////                        iconCls: 'icon-update',
+////                        itemId: 'update',
+////                        text: 'Actualizar',
+////                        disabled: true,
+////                        tooltip: 'Actualizar',
+////                        handler: onUpdatePerson
+////                    }, {
+////                        iconCls: 'icon-add',
+////                        text: 'Crear',
+////                        itemId: 'create',
+////                        tooltip: 'Crear',
+////                        handler: function() {
+////                            var form = formAdminPerson.getForm();
+////                            if (form.isValid()) {
+////                                form.submit({
+////                                    url: 'php/admin/user/create.php',
+////                                    success: function(form, action) {
+////                                        Ext.Msg.alert('Error', 'Persona Guardada');
+////
+////                                    },
+////                                    failure: function(form, action) {
+////                                        Ext.Msg.alert('Error', 'No se pudo guardar');
+////                                    }
+////                                });
+////                            }
+////                        }
+////                    }, {
+////                        iconCls: 'icon-delete',
+////                        text: 'Eliminar',
+////                        disabled: true,
+////                        itemId: 'delete',
+////                        tooltip: 'Eliminar Persona',
+////                        handler: onDeletePerson
+////                    }, {
+////                        iconCls: 'icon-reset',
+////                        text: 'Limpiar',
+////                        tooltip: 'Limpiar Campos',
+////                        handler: onResetPerson
+////                    }, {
+////                        iconCls: 'icon-cancel',
+////                        tooltip: 'Cancelar',
+////                        handler: function() {
+////                            winAdminPerson.hide();
+////                        }
+////                    }]
+////            }]
+//    });
 });
 function showWinAdminPerson() {
     if (!winAdminPerson) {
@@ -336,8 +652,8 @@ function showWinAdminPerson() {
             title: 'Administración de Personal',
             iconCls: 'icon-person',
             resizable: false,
-            width: 750,
-            height: 450,
+            width: 450,
+            height: 650,
             closeAction: 'hide',
             plain: false,
             items: [{
