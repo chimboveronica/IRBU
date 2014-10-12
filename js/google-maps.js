@@ -170,7 +170,7 @@ function calcRoute(storeLatLong) {
 
 function limpiarMapa() {
     mapGoogle.setMap(mapGoogle);
-    
+
 }
 
 function paradasRutas(storeParadasRutas) {
@@ -196,7 +196,7 @@ function paradasRutas(storeParadasRutas) {
         markers[i].infoWindow = new google.maps.InfoWindow({
             content: ' <center><img src="' + storeParadasRutas[i].dir_img + '" width="180" height="90"></center><br>\n\
                     <b>Dirección: </b>' + storeParadasRutas[i].direccion + '<br>\n\
-                    <b>Información de horarios</b><a href="' + + '" target="_blank"><img src="img/Safari.png" width="30" height="30"></a>'
+                    <b>Información de horarios</b><a href="' + +'" target="_blank"><img src="img/Safari.png" width="30" height="30"></a>'
 
         });
 
@@ -221,3 +221,14 @@ function computeTotalDistance(result) {
 
     console.log(total + ' km');
 }
+
+
+function obtenerLongLat() {
+    google.maps.event.addListener(mapGoogle, 'click', function(event) {
+        Ext.getCmp('latitud').setValue(event.latLng.k);
+        Ext.getCmp('longitud').setValue(event.latLng.B);
+        winParadas.show();
+    });
+}
+
+

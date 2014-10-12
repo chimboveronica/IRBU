@@ -154,7 +154,7 @@ Ext.onReady(function() {
                                     {
                                         text: 'Paradas',
                                         iconCls: 'icon-route',
-//                                        handler: showWinAdminUser
+                                        handler: ventanaParadas
                                     },
                                 ]
                             }]
