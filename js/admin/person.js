@@ -2,10 +2,9 @@ var winAdminPerson;
 var formAdminPerson;
 var gridAdminPerson;
 var gridStore;
+var rowSelect;
 Ext.onReady(function() {
-
     var edadDate = Ext.Date.subtract(new Date(), Ext.Date.YEAR, 18);
-
     Ext.define('DataPerson', {
         extend: 'Ext.data.Model',
         fields: [
@@ -18,7 +17,6 @@ Ext.onReady(function() {
             {name: 'imagePerson', type: 'string'}
         ]
     });
-
     gridStore = Ext.create('Ext.data.Store', {
         autoLoad: true,
         autoSync: true,
@@ -60,8 +58,6 @@ Ext.onReady(function() {
             }
         }
     });
-
-
     formAdminPerson = Ext.create('Ext.form.Panel', {
         padding: '10 10 10 10',
         region: 'center',
@@ -72,16 +68,21 @@ Ext.onReady(function() {
         items: [
             {xtype: 'form',
                 defaults: {
-//                    padding: '0 15 0 0',
                     baseCls: 'x-plain',
                     layout: 'vbox',
-                    //defaultType: 'textfield',
                     defaults: {
                         labelWidth: 100
                     }
                 },
-//                bodyStyle: "background-image: url('img/user.gif'); background-repeat:no-repeat; width='10' height='10'",
-                items: [{
+                items: [
+                    {
+                        fieldLabel: 'Img',
+                        xtype: 'textfield',
+                        name: 'imagePerson',
+                        id: 'imagePerson',
+                        hidden: true
+                    },
+                    {
                         items: [
                             {
                                 xtype: 'fieldset',
@@ -106,8 +107,11 @@ Ext.onReady(function() {
                                         emptyText: 'Seleccionar Opción...',
                                         listeners: {
                                             select: function(combo, records, eOpts) {
-                                                console.log(records[0]);
+                                                rowSelect = records[0];
                                                 setActiveRecords(records[0] || null);
+
+                                                formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + records[0].data.imagePerson);
+                                                formAdminPerson.down('[name=imageFile]').setRawValue(records[0].data.imagePerson);
                                             }
                                         }
                                     },
@@ -193,7 +197,8 @@ Ext.onReady(function() {
                         xtype: 'form',
                         layout: 'anchor',
                         margin: '0 0 0 8',
-                        items: [{
+                        items: [
+                            {
                                 xtype: 'filefield',
                                 name: 'imageFile',
                                 emptyText: "Máximo 2MB",
@@ -210,10 +215,8 @@ Ext.onReady(function() {
                                         form.submit({
                                             url: 'php/upload/uploadUsuario.php',
                                             success: function(form, action) {
-                                                formAdminPerson.down('[name=labelImage]').setSrc('img/fotos/' + action.result['img']);
-                                                formAdminPerson.down('[name=imagePerson]').setValue(action.result['img']);
-//                                                //formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + action.result['img']);
-//                                                formAdminPerson.down('[name=imagePerson]').setValue(action.result['img']);
+                                                formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + action.result['img']);
+                                                formAdminPerson.down('[name=imagePerson]').setRawValue(action.result['img']);
                                                 thisObj.setValue(action.result['img']);
                                             },
                                             failure: function(form, action) {
@@ -308,6 +311,7 @@ function onUpdatePerson() {
     }
     if (form.isValid()) {
         form.updateRecord(active);
+        formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + 'sin_img.png');
     } else {
         Ext.example.msg("Alerta", 'Llenar los campos obligatorios.');
     }
@@ -320,6 +324,7 @@ function onCreatePerson() {
         formAdminPerson.down('#update').disable();
         form.reset();
         gridStore.reload();
+        formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + 'sin_img.png');
     } else {
         Ext.example.msg("Alerta", 'Llenar los campos marcados en rojo, correctamente ');
 
@@ -332,17 +337,36 @@ function onResetPerson() {
     formAdminPerson.down('#create').enable();
     formAdminPerson.getForm().reset();
     formAdminPerson.getForm().reset();
+    formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + 'sin_img.png');
 }
 
+
 function onDeletePerson() {
-    Ext.MessageBox.confirm('Atención!', 'Desea Eliminar la Persona', function(choice) {
+    var form = formAdminPerson.getForm();
+    if (form.isValid()) {
+          Ext.MessageBox.confirm('Atención!', 'Desea Eliminar la Persona', function(choice) {
         if (choice === 'yes') {
-//            var selection = gridAdminPerson.getView().getSelectionModel().getSelection()[0];
-            if (selection) {
-//                gridAdminPerson.store.remove(selection);
-                //formAdminPerson.down('#delete').disable();
+            if (rowSelect) {
+                formAdminPerson.fireEvent('destroy', formAdminPerson, form.getValues());
                 formAdminPerson.down('#create').enable();
+                onResetPerson();
             }
         }
     });
+        
+    }
+  
 }
+
+//function onDeletePerson() {
+//    Ext.MessageBox.confirm('Atención!', 'Desea Eliminar la Persona', function(choice) {
+//        if (choice === 'yes') {
+//            if (rowSelect) {
+//                onResetPerson();
+//                formAdminPerson.down('#create').enable();
+//                formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + 'sin_img.png');
+//                 
+//            }
+//        }
+//    });
+//}
