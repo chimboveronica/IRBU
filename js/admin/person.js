@@ -81,7 +81,15 @@ Ext.onReady(function() {
                     }
                 },
 //                bodyStyle: "background-image: url('img/user.gif'); background-repeat:no-repeat; width='10' height='10'",
-                items: [{
+                items: [
+                      {
+                        fieldLabel: 'Img',
+                        xtype: 'textfield',
+                        name: 'imagePerson',
+                        id: 'imagePerson',
+                        hidden: true
+                    },
+                    {
                         items: [
                             {
                                 xtype: 'fieldset',
@@ -108,6 +116,8 @@ Ext.onReady(function() {
                                             select: function(combo, records, eOpts) {
                                                 console.log(records[0]);
                                                 setActiveRecords(records[0] || null);
+                                                formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + records[0].data.imagePerson);
+                                                formAdminPerson.down('[name=imageFile]').setRawValue(records[0].data.imagePerson);
                                             }
                                         }
                                     },
@@ -193,7 +203,8 @@ Ext.onReady(function() {
                         xtype: 'form',
                         layout: 'anchor',
                         margin: '0 0 0 8',
-                        items: [{
+                        items: [
+                            {
                                 xtype: 'filefield',
                                 name: 'imageFile',
                                 emptyText: "Máximo 2MB",
@@ -210,10 +221,8 @@ Ext.onReady(function() {
                                         form.submit({
                                             url: 'php/upload/uploadUsuario.php',
                                             success: function(form, action) {
-                                                formAdminPerson.down('[name=labelImage]').setSrc('img/fotos/' + action.result['img']);
-                                                formAdminPerson.down('[name=imagePerson]').setValue(action.result['img']);
-//                                                //formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + action.result['img']);
-//                                                formAdminPerson.down('[name=imagePerson]').setValue(action.result['img']);
+                                                formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + action.result['img']);
+                                                formAdminPerson.down('[name=imagePerson]').setRawValue(action.result['img']);
                                                 thisObj.setValue(action.result['img']);
                                             },
                                             failure: function(form, action) {
