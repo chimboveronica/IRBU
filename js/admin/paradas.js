@@ -157,7 +157,7 @@ Ext.onReady(function() {
                 dock: 'bottom',
                 ui: 'footer',
                 items: ['->', {
-                        iconCls: 'icon-update',
+                        iconCls: 'icon-add',
                         itemId: 'create',
                         text: 'crear',
                         tooltip: 'Crear Parada',
@@ -199,7 +199,7 @@ Ext.onReady(function() {
                             });
                         }
                     }, {
-                        iconCls: 'icon-cancel',
+                        iconCls: 'icon-updat',
                         tooltip: 'Cancelar',
                         itemId: 'update',
                         text: 'Actualizar',
@@ -245,7 +245,7 @@ Ext.onReady(function() {
                             }
                         }
                     }, {
-                        iconCls: 'icon-cancel',
+                        iconCls: 'icon-reset',
                         tooltip: 'Eliminar',
                         itemId: 'destroy',
 //                        text: 'Eliminar',
@@ -282,7 +282,7 @@ Ext.onReady(function() {
 
                         }
                     }, {
-                        iconCls: 'icon-cancel',
+                        iconCls: 'limpiar',
                         tooltip: 'Limpiar',
                         itemId: 'clear',
 //                        text: 'Limpiar',
