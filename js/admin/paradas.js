@@ -21,8 +21,7 @@ Ext.onReady(function() {
                         title: '<b>Datos Paradas</b>',
                         collapsible: true,
                         layout: 'anchor',
-                        items: [
-                            {
+                        items: [{
                                 fieldLabel: 'Img',
                                 xtype: 'textfield',
                                 name: 'image',

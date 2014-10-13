@@ -2,6 +2,7 @@ var winAdminPerson;
 var formAdminPerson;
 var gridAdminPerson;
 var gridStore;
+var rowSelect;
 Ext.onReady(function() {
     var edadDate = Ext.Date.subtract(new Date(), Ext.Date.YEAR, 18);
     Ext.define('DataPerson', {
@@ -74,7 +75,7 @@ Ext.onReady(function() {
                     }
                 },
                 items: [
-                      {
+                    {
                         fieldLabel: 'Img',
                         xtype: 'textfield',
                         name: 'imagePerson',
@@ -106,8 +107,9 @@ Ext.onReady(function() {
                                         emptyText: 'Seleccionar Opción...',
                                         listeners: {
                                             select: function(combo, records, eOpts) {
-                                                console.log(records[0]);
+                                                rowSelect = records[0];
                                                 setActiveRecords(records[0] || null);
+
                                                 formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + records[0].data.imagePerson);
                                                 formAdminPerson.down('[name=imageFile]').setRawValue(records[0].data.imagePerson);
                                             }
@@ -309,7 +311,7 @@ function onUpdatePerson() {
     }
     if (form.isValid()) {
         form.updateRecord(active);
-   formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + 'sin_img.png');
+        formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + 'sin_img.png');
     } else {
         Ext.example.msg("Alerta", 'Llenar los campos obligatorios.');
     }
@@ -337,16 +339,34 @@ function onResetPerson() {
     formAdminPerson.getForm().reset();
     formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + 'sin_img.png');
 }
+
+
 function onDeletePerson() {
-    Ext.MessageBox.confirm('Atención!', 'Desea Eliminar la Persona', function(choice) {
+    var form = formAdminPerson.getForm();
+    if (form.isValid()) {
+          Ext.MessageBox.confirm('Atención!', 'Desea Eliminar la Persona', function(choice) {
         if (choice === 'yes') {
-//            var selection = gridAdminPerson.getView().getSelectionModel().getSelection()[0];
-            if (selection) {
-//                gridAdminPerson.store.remove(selection);
-                //formAdminPerson.down('#delete').disable();
+            if (rowSelect) {
+                formAdminPerson.fireEvent('destroy', formAdminPerson, form.getValues());
                 formAdminPerson.down('#create').enable();
-                 formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + 'sin_img.png');
+                onResetPerson();
             }
         }
     });
+        
+    }
+  
 }
+
+//function onDeletePerson() {
+//    Ext.MessageBox.confirm('Atención!', 'Desea Eliminar la Persona', function(choice) {
+//        if (choice === 'yes') {
+//            if (rowSelect) {
+//                onResetPerson();
+//                formAdminPerson.down('#create').enable();
+//                formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + 'sin_img.png');
+//                 
+//            }
+//        }
+//    });
+//}
