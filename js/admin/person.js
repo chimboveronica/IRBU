@@ -72,15 +72,12 @@ Ext.onReady(function() {
         items: [
             {xtype: 'form',
                 defaults: {
-//                    padding: '0 15 0 0',
                     baseCls: 'x-plain',
                     layout: 'vbox',
-                    //defaultType: 'textfield',
                     defaults: {
                         labelWidth: 100
                     }
                 },
-//                bodyStyle: "background-image: url('img/user.gif'); background-repeat:no-repeat; width='10' height='10'",
                 items: [
                       {
                         fieldLabel: 'Img',
