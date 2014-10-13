@@ -317,6 +317,7 @@ function onUpdatePerson() {
     }
     if (form.isValid()) {
         form.updateRecord(active);
+   formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + 'sin_img.png');
     } else {
         Ext.example.msg("Alerta", 'Llenar los campos obligatorios.');
     }
@@ -329,6 +330,7 @@ function onCreatePerson() {
         formAdminPerson.down('#update').disable();
         form.reset();
         gridStore.reload();
+        formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + 'sin_img.png');
     } else {
         Ext.example.msg("Alerta", 'Llenar los campos marcados en rojo, correctamente ');
 
@@ -341,6 +343,7 @@ function onResetPerson() {
     formAdminPerson.down('#create').enable();
     formAdminPerson.getForm().reset();
     formAdminPerson.getForm().reset();
+     formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + 'sin_img.png');
 }
 
 function onDeletePerson() {
@@ -351,6 +354,7 @@ function onDeletePerson() {
 //                gridAdminPerson.store.remove(selection);
                 //formAdminPerson.down('#delete').disable();
                 formAdminPerson.down('#create').enable();
+                 formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + 'sin_img.png');
             }
         }
     });
