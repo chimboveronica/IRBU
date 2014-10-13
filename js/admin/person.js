@@ -3,9 +3,7 @@ var formAdminPerson;
 var gridAdminPerson;
 var gridStore;
 Ext.onReady(function() {
-
     var edadDate = Ext.Date.subtract(new Date(), Ext.Date.YEAR, 18);
-
     Ext.define('DataPerson', {
         extend: 'Ext.data.Model',
         fields: [
@@ -18,7 +16,6 @@ Ext.onReady(function() {
             {name: 'imagePerson', type: 'string'}
         ]
     });
-
     gridStore = Ext.create('Ext.data.Store', {
         autoLoad: true,
         autoSync: true,
@@ -60,8 +57,6 @@ Ext.onReady(function() {
             }
         }
     });
-
-
     formAdminPerson = Ext.create('Ext.form.Panel', {
         padding: '10 10 10 10',
         region: 'center',
@@ -340,9 +335,8 @@ function onResetPerson() {
     formAdminPerson.down('#create').enable();
     formAdminPerson.getForm().reset();
     formAdminPerson.getForm().reset();
-     formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + 'sin_img.png');
+    formAdminPerson.down('[name=labelImage]').setSrc('img/usuario/' + 'sin_img.png');
 }
-
 function onDeletePerson() {
     Ext.MessageBox.confirm('Atención!', 'Desea Eliminar la Persona', function(choice) {
         if (choice === 'yes') {
