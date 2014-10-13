@@ -417,6 +417,10 @@ Ext.onReady(function() {
                                         text: 'Paradas',
                                         iconCls: 'icon-route',
                                         handler: ventanaParadas
+                                    },{
+                                        text: 'Rutas',
+                                        iconCls: 'icon-route',
+                                        handler: showWinAdminRoute
                                     },
                                 ]
                             }]

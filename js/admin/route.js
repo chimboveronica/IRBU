@@ -210,7 +210,7 @@ function showWinAdminRoute() {
     if (!winAdminRoute) {
         winAdminRoute = Ext.create('Ext.window.Window', {
             layout: 'fit',
-            title: 'Administración de Personal',
+            title: 'Administración de Rutas',
             iconCls: 'icon-person',
             resizable: false,
             width: 650,

@@ -33,9 +33,10 @@ echo "
 
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3&sensor=false"></script>
         <script type="text/javascript" src="js/admin.js"></script>
-        <!--<script type="text/javascript" src="js/admin/user.js"></script>-->
         <script type="text/javascript" src="js/admin/person.js"></script>
         <script type="text/javascript" src="js/admin/paradas.js"></script>
+        <script type="text/javascript" src="js/admin/route.js"></script>
+        
         <script type="text/javascript" src="js/menu/searchRoute.js"></script>
         <script type="text/javascript" src="js/menu/searchDateRoute.js"></script>
         <script type="text/javascript" src="js/stores.js"></script>
