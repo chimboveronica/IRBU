@@ -14,23 +14,20 @@ if (!$mysqli = getConectionDb()) {
 
     while ($myrow = $result->fetch_assoc()) {
         $idRoute = $myrow["id_ruta"];
-        $consultaLineSql = "select pr.orden, pr.latitud, pr.longitud, r.color "
-                . "from linea_rutas pr, rutas r "
-                . "where pr.id_ruta = r.id_ruta "
-                . "and pr.id_ruta = $idRoute "
-                . "order by pr.orden";
+        $consultaSql1 = "SELECT LON,LAT FROM COORDENADAS_GPS WHERE ID_RUTA ='$idRoute'ORDER BY ORDEN ASC";
 
-        $resultLine = $mysqli->query($consultaLineSql);
+
+        $resultLine = $mysqli->query($consultaSql1);
 
         $verticesRoute = "";
         if ($resultLine->num_rows > 0) {
             while ($myrowline = $resultLine->fetch_assoc()) {
-                $verticesRoute .= $myrowline["latitud"] . "," . $myrowline["longitud"] . ";";
+                $verticesRoute .= $myrowline["LAT"] . "," . $myrowline["LON"] . ";";
             }
         }
 
         $objJson .= "{"
-                . "idRoute:" .$myrow["id_ruta"] . ","
+                . "idRoute:" . $myrow["id_ruta"] . ","
                 . "tipoRoute:'" . $myrow["tipo"] . "',"
                 . "nombreRoute:'" . utf8_encode($myrow["nombre"]) . "',"
                 . "verticesRoute:'" . substr($verticesRoute, 0, -1) . "'},";

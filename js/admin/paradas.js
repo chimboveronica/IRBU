@@ -267,6 +267,7 @@ Ext.onReady(function() {
                                 success: function(form, action) {
                                     Ext.example.msg("Mensaje", 'Datos eliminados correctamente');
                                     storeParadas1.reload();
+                                    storeParadasTotales.reload();
                                     formParadas.down('[name=labelImage]').setSrc('img/datap/' + 'sin_img.png');
                                     formParadas.getForm().reset();
                                     formParadas.down('#create').enable();

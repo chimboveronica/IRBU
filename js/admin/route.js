@@ -4,17 +4,16 @@ var gridAdminRoute;
 var gridStore;
 Ext.onReady(function() {
 
+
+
     var edadDate = Ext.Date.subtract(new Date(), Ext.Date.YEAR, 18);
     Ext.define('DataPerson', {
         extend: 'Ext.data.Model',
         fields: [
-            {name: 'id', mapping: 'idUsuario', type: 'int'},
-            {name: 'cedula', type: 'string'},
-            {name: 'nombres', type: 'string'},
-            {name: 'apellidos', type: 'string'},
-            {name: 'usuario', type: 'string'},
-            {name: 'clave', type: 'string'},
-            {name: 'imagePerson', type: 'string'}
+            {name: 'id', mapping: 'idRoute', type: 'int'},
+            {name: 'nombreRoute', type: 'string'},
+            {name: 'tipoRoute', type: 'string'},
+            {name: 'verticesRoute', type: 'string'},
         ]
     });
     gridStore = Ext.create('Ext.data.Store', {
@@ -24,10 +23,10 @@ Ext.onReady(function() {
         proxy: {
             type: 'ajax',
             api: {
-                read: 'php/admin/user/read.php',
-                create: 'php/admin/user/create.php',
-                update: 'php/admin/user/update.php',
-                destroy: 'php/admin/user/destroy.php'
+                read: 'php/admin/route/read.php',
+                create: 'php/admin/route/create.php',
+                update: 'php/admin/route/update.php',
+                destroy: 'php/admin/route/destroy.php'
             },
             reader: {
                 type: 'json',
@@ -52,7 +51,7 @@ Ext.onReady(function() {
         },
         listeners: {
             write: function(store, operation, eOpts) {
-                onResetPerson();
+                onResetRoute();
                 gridStore.reload();
                 Ext.example.msg("Mensaje", operation._resultSet.message);
             }
@@ -89,19 +88,34 @@ Ext.onReady(function() {
                                         xtype: 'combobox',
                                         fieldLabel: 'Nombre',
                                         afterLabelTextTpl: required,
-                                        name: 'nombre',
+                                        name: 'nombreRoute',
                                         width: 200,
                                         store: gridStore,
-                                        valueField: 'idRoute',
-                                        displayField: 'nombre',
+                                        valueField: 'id',
+                                        displayField: 'nombreRoute',
                                         queryMode: 'local',
                                         allowBlank: false,
                                         blankText: 'Este campo es obligaorio',
                                         emptyText: 'Seleccionar Opción...',
                                         listeners: {
                                             select: function(combo, records, eOpts) {
-                                                console.log(records[0]);
                                                 setActiveRecords(records[0] || null);
+
+                                                storeParadasAsignadas.load({
+                                                    params: {
+                                                        tipo: records[0].data.tipoRoute,
+                                                        id_ruta: records[0].data.idRoute
+                                                    }
+                                                });
+
+
+
+
+
+
+
+
+
                                             }
                                         }
                                     },
@@ -109,7 +123,7 @@ Ext.onReady(function() {
                                         xtype: 'combobox',
                                         fieldLabel: 'Tipo',
                                         afterLabelTextTpl: required,
-                                        name: 'tipo',
+                                        name: 'tipoRoute',
                                         width: 200,
                                         store: gridStore,
                                         valueField: 'tipo',
@@ -140,14 +154,8 @@ Ext.onReady(function() {
                                                 xtype: 'button',
                                                 value: 0,
                                                 handler: function() {
-//                            if (drawRoute === true) {
-//                                drawLine.activate();
-//                            } else {
-//                                modifyLine.activate();
-//                                modifyLine.activate();
-//                                finishDrawRoute.show();
-//                            }
-//                            winAdminRoute.hide();
+                                                    winAdminRoute.hide();
+                                                    dibujarRuta();
                                                 }
                                             }]
                                     }
@@ -167,7 +175,7 @@ Ext.onReady(function() {
                                                 name: 'listEvt',
 //                                                 width: 300,
                                                 height: 150,
-                                                store: storeParadas1,
+                                                store: storeParadasTotales,
                                                 displayField: 'nombre',
                                                 valueField: 'value',
                                                 allowBlank: false,
@@ -198,9 +206,11 @@ Ext.onReady(function() {
                     {iconCls: 'icon-updat', itemId: 'update', text: 'Actualizar', scope: this, tooltip: 'Actualizar Datos', handler: onUpdatePerson},
                     {iconCls: 'icon-add', itemId: 'create', text: 'Crear', scope: this, tooltip: 'Crear Persona', handler: onCreatePerson},
                     {iconCls: 'icon-reset', itemId: 'delete', text: 'Eliminar', scope: this, tooltip: 'Eliminar Persona', handler: onDeletePerson},
-                    {iconCls: 'limpiar', text: 'Limpiar', tooltip: 'Limpiar Campos', scope: this, handler: onResetPerson},
+                    {iconCls: 'limpiar', text: 'Limpiar', tooltip: 'Limpiar Campos', scope: this, handler: onResetRoute},
                     {iconCls: 'icon-cancel', tooltip: 'Cancelar', scope: this, handler: function() {
-                            winAdminRoute.hide();
+
+
+
                         }}
                 ]
             }]
@@ -226,7 +236,7 @@ function showWinAdminRoute() {
                 }]
         });
     }
-    onResetPerson();
+    onResetRoute();
     winAdminRoute.show();
 }
 
@@ -268,7 +278,7 @@ function onCreatePerson() {
     }
 }
 
-function onResetPerson() {
+function onResetRoute() {
     setActiveRecords(null);
     formAdminRoute.down('#delete').disable();
     formAdminRoute.down('#create').enable();

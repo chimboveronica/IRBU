@@ -19,11 +19,11 @@ var directionsDisplay;
 var directionsService = new google.maps.DirectionsService();
 var map;
 var image;
-
+var mapOptions;
 
 Ext.onReady(function() {
     // Constructor Base
-    var mapOptions = {
+    mapOptions = {
         zoom: 14,
         center: new google.maps.LatLng(-3.9912, -79.20733),
         mapTypeId: google.maps.MapTypeId.ROADMAP, //ROADMAP :: SATELLITE :: TERRAIN
@@ -169,7 +169,7 @@ function calcRoute(storeLatLong) {
 }
 
 function limpiarMapa() {
-    mapGoogle.setMap(mapGoogle);
+    mapGoogle.removeAll();
 
 }
 
@@ -232,3 +232,70 @@ function obtenerLongLat() {
 }
 
 
+function dibujarRuta() {
+
+    var drawingManager = new google.maps.drawing.DrawingManager({
+        drawingMode: google.maps.drawing.OverlayType.MARKER,
+        drawingControl: true,
+        drawingControlOptions: {
+            position: google.maps.ControlPosition.TOP_CENTER,
+            drawingModes: [
+//                google.maps.drawing.OverlayType.MARKER,
+//                google.maps.drawing.OverlayType.CIRCLE,
+//                google.maps.drawing.OverlayType.POLYGON,
+                google.maps.drawing.OverlayType.POLYLINE,
+//                google.maps.drawing.OverlayType.RECTANGLE
+            ]
+        },
+    });
+    var puntos = [];
+    google.maps.event.addListener(drawingManager, 'polylinecomplete', function(line) {
+
+        for (var i = 0; i < line.getPath().length; i++) {
+            puntos.push({
+                latitud: line.getPath().j[0].K,
+                longitud: line.getPath().j[0].B,
+            });
+        }
+        Ext.getCmp('selector').setValue(line.getPath().length);
+        winAdminRoute.show();
+
+    });
+    drawingManager.setMap(mapGoogle);
+
+}
+
+
+function dibujarParadasMasCercanas() {
+
+    var drawingManager = new google.maps.drawing.DrawingManager({
+        drawingMode: google.maps.drawing.OverlayType.MARKER,
+        drawingControl: true,
+        drawingControlOptions: {
+            position: google.maps.ControlPosition.TOP_CENTER,
+            drawingModes: [
+                google.maps.drawing.OverlayType.MARKER,
+                google.maps.drawing.OverlayType.CIRCLE,
+                google.maps.drawing.OverlayType.POLYGON,
+                google.maps.drawing.OverlayType.POLYLINE,
+                google.maps.drawing.OverlayType.RECTANGLE
+            ]
+        },
+    });
+    var puntos = [];
+    google.maps.event.addListener(drawingManager, 'polylinecomplete', function(line) {
+        for (var j = 0; j < storeParadasTotales.length; j++) {
+            console.log(storeParadas.getAt(j).data.lon);
+            console.log("Longitud" + line.getPath().j[i].B);
+
+            for (var i = 0; i < line.getPath().length; i++) {
+                if (storeParadas.getAt(j).data.lon <= line.getPath().j[i].B)
+                    console.log("Latitud" + line.getPath().j[i].K + "Longitud" + line.getPath().j[i].B);
+            }
+        }
+
+
+    });
+    drawingManager.setMap(mapGoogle);
+
+}

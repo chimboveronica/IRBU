@@ -1,31 +1,55 @@
-var formShowWinsearchRoute;
 var winShowWinsearchRoute;
-var cbxShowWinsearchRoute;
-var empresa = 1;
+var formShowWinsearchRoute;
+var gridsearchRoute;
 var tipo = '';
+var id_Ruta;
 Ext.onReady(function() {
-
-    cbxShowWinsearchRoute = Ext.create('Ext.form.ComboBox', {
-        fieldLabel: 'Rutas',
-        name: 'id_Ruta',
-        store: storeRutas,
-        valueField: 'id',
-        displayField: 'text',
-        forceSelection: true,
-        queryMode: 'local',
-        emptyText: 'Seleccionar Ruta...',
-        allowBlank: false,
+    tipo = 'R';
+    storeRutas.load({
+        params: {
+            tipo: tipo
+        }
     });
+    gridsearchRoute = Ext.create('Ext.grid.Panel', {
+        store: storeRutas,
+        stripeRows: true,
+        width: '55%',
+        margins: '0 2 0 0',
+        region: 'center',
+        title: 'Resultados',
+        features: [filters],
+        columns: [
+            Ext.create('Ext.grid.RowNumberer', {text: 'Nº', width: 30, align: 'center'}),
+            {text: 'Ruta', width: 450, dataIndex: 'text', align: 'center', filterable: true},
+        ],
+        listeners: {
+            selectionchange: function(thisObject, selected, eOpts) {
+                if (selected.length > 0) {
+                    id_Ruta = selected[0].data.id;
+                    console.log(selected[0].data.id);
 
+
+                }
+            }
+        }
+    });
     formShowWinsearchRoute = Ext.create('Ext.form.Panel', {
-        bodyPadding: '10 10 0 10',
+        region: 'north',
+        activeRecord: null,
+        bodyPadding: '10 10 10 10',
+        margins: '0 0 0 3',
+        defaultType: 'textfield',
+        layout: 'anchor',
         fieldDefaults: {
-            labelAlign: 'left',
+            msgTarget: 'side'
+        },
+        defaults: {
             anchor: '100%'
         },
-        items: [{
+        items: [
+            {
                 xtype: 'fieldset',
-                title: '<b>Datos</b>',
+                title: '<b>Criterios de Búsqueda</b>',
                 items: [
                     {
                         xtype: 'radiogroup',
@@ -42,7 +66,6 @@ Ext.onReady(function() {
                             change: function(field, newValue, oldValue) {
                                 switch (parseInt(newValue['rb'])) {
                                     case 1:
-                                        cbxShowWinsearchRoute.enable();
                                         tipo = 'R';
                                         storeRutas.load({
                                             params: {
@@ -52,7 +75,6 @@ Ext.onReady(function() {
 
                                         break;
                                     case 2:
-                                        cbxShowWinsearchRoute.enable();
                                         tipo = 'B';
 
                                         storeRutas.load({
@@ -62,7 +84,6 @@ Ext.onReady(function() {
                                         });
                                         break;
                                     case 3:
-                                        cbxShowWinsearchRoute.enable();
                                         tipo = 'BR';
                                         storeRutas.load({
                                             params: {
@@ -74,110 +95,101 @@ Ext.onReady(function() {
 
                             }
                         }
-                    },
-                    cbxShowWinsearchRoute
+                    }
                 ]
-            }], buttons: [{
-                text: 'Obtener',
+            }
+        ],
+        listeners: {
+            create: function(form, data) {
+                gridStore.insert(0, data);
+                gridStore.reload();
+            }
+        },
+        buttons: [{
+                text: 'Trazar',
                 iconCls: 'icon-obtener',
                 handler: function() {
-                    id_Ruta = cbxShowWinsearchRoute.getValue();
-                    console.log(id_Ruta);
-                    var form = formShowWinsearchRoute.getForm();
-                    if (form.isValid()) {
-                        form.submit({
-                            url: 'php/getCordenadas.php',
-                            waitTitle: 'Procesando...',
-                            waitMsg: 'Obteniendo Información',
-                            params: {
-                                id_Ruta: id_Ruta
-                            },
-                            success: function(form, action) {
-                                calcRoute(action.result.data);
+                    if (id_Ruta != null) {
+                        var form = formShowWinsearchRoute.getForm();
+                        if (form.isValid()) {
+                            form.submit({
+                                url: 'php/getCordenadas.php',
+                                waitTitle: 'Procesando...',
+                                waitMsg: 'Obteniendo Información',
+                                params: {
+                                    id_Ruta: id_Ruta
+                                },
+                                success: function(form, action) {
+                                    calcRoute(action.result.data);
 
-                                form.submit({
-                                    url: 'php/getParadasRutas.php',
-                                    method: 'POST',
-                                    params: {
-                                        tipo: tipo,
-                                        id_ruta: id_Ruta
-                                    },
-                                    success: function(form, action) {
+                                    form.submit({
+                                        url: 'php/getParadasRutas.php',
+                                        method: 'POST',
+                                        params: {
+                                            tipo: tipo,
+                                            id_ruta: id_Ruta
+                                        },
+                                        success: function(form, action) {
 //                                        console.log(action.result.data);
-                                        paradasRutas(action.result.data);
-                                    },
-                                    failure: function(form, action) {
+                                            paradasRutas(action.result.data);
+                                        },
+                                        failure: function(form, action) {
 
 
-                                    }
-                                });
-                                winShowWinsearchRoute.hide();
+                                        }
+                                    });
+                                    winShowWinsearchRoute.hide();
 
-                            },
-                            failure: function(form, action) {
-
-
-                            }
-                        });
+                                },
+                                failure: function(form, action) {
 
 
+                                }
+                            });
 
-
-
+                        }
+                    }
+                    else {
+                        Ext.example.msg("Mensaje", 'Dede seleccionar una Ruta');
 
                     }
                 }
-
-            }, {
+            }
+            , {
                 text: 'Cancelar',
                 iconCls: 'icon-cancel',
                 handler: function() {
                     winShowWinsearchRoute.hide();
                 }
             }]
-
-    })
+    });
 });
+
+
+
+
 function showWinsearchRoute() {
     if (!winShowWinsearchRoute) {
         winShowWinsearchRoute = Ext.create('Ext.window.Window', {
             layout: 'fit',
-            title: 'Buscar Rutas',
+            title: 'Búsqueda de Rutas',
             iconCls: 'icon-company',
             resizable: false,
-            width: 450,
-            height: 200,
+            width: 500,
+            height: 360,
             closeAction: 'hide',
             plain: false,
-            items: formShowWinsearchRoute
+            items: [{
+                    layout: 'border',
+                    bodyPadding: 5,
+                    items: [
+                        gridsearchRoute,
+                        formShowWinsearchRoute,
+                    ]
+                }]
         });
     }
-    formShowWinsearchRoute.getForm().reset();
-    cbxShowWinsearchRoute.disable();
+
     winShowWinsearchRoute.show();
 }
-function caragarParadas() {
 
-    Ext.Ajax.request({
-        url: 'php/getParadasRutas.php',
-        method: 'POST',
-        params: {
-            tipo: tipo,
-            id_ruta: id_Ruta
-        },
-        success: function(form, action) {
-            console.log(action.data);
-//            console.log(result.length);
-
-//            for (var i = 0; i < storeParadasRutas.data.length; i++) {}
-        },
-        failure: function(form, action) {
-
-
-        }
-
-    });
-
-
-    paradasRutas();
-}
