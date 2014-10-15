@@ -1,7 +1,7 @@
 <?php
 
-include ('../dll/config.php');
-extract($_POST);
+include ('../../dll/config.php');
+extract($_GET);
 if (!$mysqli = getConectionDb()) {
     echo "{success:false, msg: 'Error: No se ha podido conectar a la Base de Datos.<br>Compruebe su conexión a Internet.'}";
 } else {

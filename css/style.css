@@ -24,6 +24,7 @@ strong#subtitulo{
 #map-canvas {
     height: 100%;
 }
+.icon-menu {background-image: url(../img/menu.png) !important;}
 
 .icon-category {background-image: url(../img/categorias.png) !important;}
 .icon-author {background-image: url(../img/autor.png) !important;}

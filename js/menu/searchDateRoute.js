@@ -1,60 +1,85 @@
-var formShowWinsearchDateRoute;
-var winShowWinsearchDateRoute;
-var cbxShowWinsearchDateRoute;
-var cbxDateRoute;
-var empresa = 1;
+var winShowsearchDateRoute;
+var formShowsearchDateRoute;
+var gridsearchDateRoute;
 var tipo = '';
+var id_Ruta;
+var hora;
+var gridHoras;
+var storeHorarios;
 Ext.onReady(function() {
-    var cbxHorarios = Ext.create('Ext.form.ComboBox', {
-        fieldLabel: 'Rutas',
-        name: 'id_Horario',
+    storeHorarios = Ext.create('Ext.data.JsonStore', {
+        autoLoad: true,
+        proxy: {
+            type: 'ajax',
+            url: 'php/combobox/comboboxHorarios.php',
+            reader: {
+                type: 'json',
+                root: 'data'
+            }
+        },
+        fields: ['text']
+    });
+    gridsearchDateRoute = Ext.create('Ext.grid.Panel', {
+        frame: true,
+        width: '80%',
+        title: '',
+        store: storeRutas,
+        features: [filters],
+        multiSelect: true,
+        viewConfig: {
+            emptyText: 'No hay datos que Mostrar'
+        },
+        region: 'west',
+        columns: [
+            Ext.create('Ext.grid.RowNumberer', {text: 'Nº', width: 30, align: 'center'}),
+            {text: 'Rutas', width: 450, dataIndex: 'text', align: 'center', filterable: true},
+        ],
+        listeners: {
+            itemclick: function(thisObj, record, item, index, e, eOpts) {
+                //Id del despacho que se esta realizando
+                id_Ruta = record.get('id');
+                storeHorarios.load({
+                    params: {
+                        id_ruta: id_Ruta
+                    }
+                });
+            }}
+
+    });
+
+    gridHoras = Ext.create('Ext.grid.Panel', {
+        region: 'center',
+        frame: true,
+        width: '20%',
+        title: '',
         store: storeHorarios,
-        valueField: 'id',
-        displayField: 'text',
-        forceSelection: true,
-        queryMode: 'local',
-        emptyText: 'Seleccionar Ruta...',
-        allowBlank: false,
-    });
+        features: [filters],
+        multiSelect: true,
+        viewConfig: {
+            emptyText: 'No hay datos que Mostrar'
+        },
+        columns: [
+            {text: 'Horarios', width: 100, dataIndex: 'text', align: 'center', filterable: true},
+        ]
 
-    cbxShowWinsearchDateRoute = Ext.create('Ext.form.ComboBox', {
-        fieldLabel: 'Rutas',
-        name: 'id_RutaHora',
-        store: storeHorariosRutas,
-        valueField: 'id',
-        displayField: 'text',
-        forceSelection: true,
-        queryMode: 'local',
-        emptyText: 'Seleccionar Ruta...',
-        allowBlank: false,
     });
-
-    var timeIni = Ext.create('Ext.form.field.Time', {
-        fieldLabel: '<b>Tiempo/hora<b>',
-        afterLabelTextTpl: required,
-        name: 'hora',
-        allowBlank: false,
-        blankText: 'Este campo es obligatorio',
-        format: 'H:i:s',
-        invalidText: 'La hora es inválida',
-        value: new Date(),
-        minValue: '05:45:00',
-        maxValue: '22:30:00',
-        emptyText: '00:00:00'
-    });
-
-    formShowWinsearchDateRoute = Ext.create('Ext.form.Panel', {
-        bodyPadding: '10 10 0 10',
+    formShowsearchDateRoute = Ext.create('Ext.form.Panel', {
+        region: 'north',
+        activeRecord: null,
+        bodyPadding: '10 10 10 10',
+        margins: '0 0 0 3',
+        defaultType: 'textfield',
+        layout: 'anchor',
         fieldDefaults: {
-            labelAlign: 'left',
+            msgTarget: 'side'
+        },
+        defaults: {
             anchor: '100%'
         },
-        items: [{
+        items: [
+            {
                 xtype: 'fieldset',
-                title: '<b>Horarios</b>',
-                items: [cbxHorarios]}, {
-                xtype: 'fieldset',
-                title: '<b>Datos</b>',
+                title: '<b>Criterios de Búsqueda</b>',
                 items: [
                     {
                         xtype: 'radiogroup',
@@ -69,41 +94,27 @@ Ext.onReady(function() {
                         ],
                         listeners: {
                             change: function(field, newValue, oldValue) {
-//                                var hora = timeIni.getRawValue();
-                                var hora = cbxHorarios.getRawValue();
                                 switch (parseInt(newValue['rb'])) {
                                     case 1:
-                                        cbxShowWinsearchDateRoute.enable();
                                         tipo = 'R';
-                                        storeHorariosRutas.removeAll();
-                                        storeHorariosRutas.load({
+                                        storeRutas.load({
                                             params: {
-                                                hora: hora,
                                                 tipo: tipo
                                             }
                                         });
-
                                         break;
                                     case 2:
-                                        cbxShowWinsearchDateRoute.enable();
                                         tipo = 'B';
-                                        storeHorariosRutas.removeAll();
-
-                                        storeHorariosRutas.load({
+                                        storeRutas.load({
                                             params: {
-                                                hora: hora,
                                                 tipo: tipo
                                             }
                                         });
                                         break;
                                     case 3:
-                                        cbxShowWinsearchDateRoute.enable();
                                         tipo = 'BR';
-                                        storeHorariosRutas.removeAll();
-
-                                        storeHorariosRutas.load({
+                                        storeRutas.load({
                                             params: {
-                                                hora: hora,
                                                 tipo: tipo
                                             }
                                         });
@@ -112,80 +123,94 @@ Ext.onReady(function() {
 
                             }
                         }
-                    },
-                    cbxShowWinsearchDateRoute
+                    }
                 ]
-            }], buttons: [{
-                text: 'Obtener',
+            }
+        ],
+        listeners: {
+            create: function(form, data) {
+                gridStore.insert(0, data);
+                gridStore.reload();
+            }
+        },
+        buttons: [{
+                text: 'Trazar',
                 iconCls: 'icon-obtener',
                 handler: function() {
-                    id_Ruta = cbxShowWinsearchDateRoute.getValue();
-                    console.log(id_Ruta);
-                    var form = formShowWinsearchDateRoute.getForm();
-                    if (form.isValid()) {
-                        form.submit({
-                            url: 'php/getCordenadas.php',
-                            waitTitle: 'Procesando...',
-                            waitMsg: 'Obteniendo Información',
-                            params: {
-                                id_Ruta: id_Ruta
-                            },
-                            success: function(form, action) {
-                                calcRoute(action.result.data);
-
-                                form.submit({
-                                    url: 'php/getParadasRutas.php',
-                                    method: 'POST',
-                                    params: {
-                                        tipo: tipo,
-                                        id_ruta: id_Ruta
-                                    },
-                                    success: function(form, action) {
+                    if (id_Ruta != null) {
+                        var form = formShowsearchDateRoute.getForm();
+                        if (form.isValid()) {
+                            form.submit({
+                                url: 'php/getCordenadas.php',
+                                waitTitle: 'Procesando...',
+                                waitMsg: 'Obteniendo Información',
+                                params: {
+                                    id_Ruta: id_Ruta
+                                },
+                                success: function(form, action) {
+                                    calcRoute(action.result.data);
+                                    form.submit({
+                                        url: 'php/getParadasRutas.php',
+                                        method: 'POST',
+                                        params: {
+                                            tipo: tipo,
+                                            id_ruta: id_Ruta
+                                        },
+                                        success: function(form, action) {
 //                                        console.log(action.result.data);
-                                        paradasRutas(action.result.data);
-                                    },
-                                    failure: function(form, action) {
+                                            paradasRutas(action.result.data);
+                                        },
+                                        failure: function(form, action) {
 
 
-                                    }
-                                });
-                                winShowWinsearchDateRoute.hide();
+                                        }
+                                    });
+                                    winShowsearchDateRoute.hide();
+                                },
+                                failure: function(form, action) {
 
-                            },
-                            failure: function(form, action) {
 
-
-                            }
-                        });
-
+                                }
+                            });
+                        }
+                    }
+                    else {
+                        Ext.example.msg("Mensaje", 'Dede seleccionar una Ruta');
                     }
                 }
-
-            }, {
+            }
+            , {
                 text: 'Cancelar',
                 iconCls: 'icon-cancel',
                 handler: function() {
-                    winShowWinsearchDateRoute.hide();
+                    winShowsearchDateRoute.hide();
                 }
             }]
-
-    })
+    });
 });
 function showWinsearchDateRoute() {
-    if (!winShowWinsearchDateRoute) {
-        winShowWinsearchDateRoute = Ext.create('Ext.window.Window', {
+    if (!winShowsearchDateRoute) {
+        winShowsearchDateRoute = Ext.create('Ext.window.Window', {
             layout: 'fit',
-            title: 'Paradas por Horas y Sector ',
+            title: 'Paradas por horarios',
             iconCls: 'icon-company',
             resizable: false,
-            width: 450,
-            height: 300,
+            width: 600,
+            height: 460,
             closeAction: 'hide',
             plain: false,
-            items: formShowWinsearchDateRoute
+            items: [{
+                    layout: 'border',
+                    bodyPadding: 5,
+                    items: [
+                        formShowsearchDateRoute,
+                        gridsearchDateRoute,
+                        gridHoras,
+                    ]
+                }]
         });
     }
-    formShowWinsearchDateRoute.getForm().reset();
-    cbxShowWinsearchDateRoute.disable();
-    winShowWinsearchDateRoute.show();
+
+    winShowsearchDateRoute.show();
 }
+

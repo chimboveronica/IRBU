@@ -50,15 +50,31 @@ var storeHorariosRutas = Ext.create('Ext.data.JsonStore', {
     fields: ['id', 'text']
 });
 
-var storeHorarios = Ext.create('Ext.data.JsonStore', {
+
+
+
+
+var storeParadasAsignadas = Ext.create('Ext.data.JsonStore', {
     autoLoad: true,
     proxy: {
         type: 'ajax',
-        url: 'php/combobox/comboboxHorarios.php',
+        url: 'php/combobox/comboboxParadasAsignadas.php',
         reader: {
             type: 'json',
             root: 'data'
         }
     },
-    fields: ['id', 'text']
+    fields: ['id', 'nombre', 'lon', 'lat', 'referencia', 'direccion', 'dir_img']
+});
+var storeParadasTotales = Ext.create('Ext.data.JsonStore', {
+    autoLoad: true,
+    proxy: {
+        type: 'ajax',
+        url: 'php/combobox/comboboxParadas.php',
+        reader: {
+            type: 'json',
+            root: 'data'
+        }
+    },
+    fields: ['id', 'nombre', 'lon', 'lat', 'referencia', 'direccion', 'dir_img']
 });

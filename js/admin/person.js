@@ -344,18 +344,18 @@ function onResetPerson() {
 function onDeletePerson() {
     var form = formAdminPerson.getForm();
     if (form.isValid()) {
-          Ext.MessageBox.confirm('Atención!', 'Desea Eliminar la Persona', function(choice) {
-        if (choice === 'yes') {
-            if (rowSelect) {
-                formAdminPerson.fireEvent('destroy', formAdminPerson, form.getValues());
-                formAdminPerson.down('#create').enable();
-                onResetPerson();
+        Ext.MessageBox.confirm('Atención!', 'Desea Eliminar la Persona', function(choice) {
+            if (choice === 'yes') {
+                if (rowSelect) {
+                    formAdminPerson.fireEvent('destroy', formAdminPerson, form.getValues());
+                    formAdminPerson.down('#create').enable();
+                    onResetPerson();
+                }
             }
-        }
-    });
-        
+        });
+
     }
-  
+
 }
 
 //function onDeletePerson() {

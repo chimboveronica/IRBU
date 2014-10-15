@@ -32,54 +32,46 @@ Ext.require([
     'Ext.ux.CheckColumn',
     'Ext.ux.Spotlight'
 ]);
+var filters = {
+    ftype: 'filters',
+    // encode and local configuration options defined previously for easier reuse
+    encode: false, // json encode the filter query
+    local: true, // defaults to false (remote filtering)
 
+    // Filters are most naturally placed in the column definition, but can also be
+    // added here.
+    filters: [{
+            type: 'boolean',
+            dataIndex: 'visible'
+        }]
+};
 Ext.onReady(function() {
     Ext.tip.QuickTipManager.init();
-    var barraMenu = Ext.create('Ext.toolbar.Toolbar', {
-        width: '100%',
-        items: [
+
+
+    var menu = Ext.create('Ext.button.Button', {
+        text: 'Menu',
+        iconCls: 'icon-menu',
+        menu: [
             {
-                xtype: 'label',
-                html: '<iframe src="http://free.timeanddate.com/clock/i3x5kb7x/n190/tlec4/fn12/fs18/tct/pct/ftb/bas0/bat0/th1" frameborder="0"   width= "100" height="15" allowTransparency="true"></iframe>'
-            }, '-' ,{
-                xtype: 'button',
-                cls: 'x-btn-text-icon',
-                icon: 'img/user.gif',
-                text: 'Iniciar Sesión',
-                handler: ventanaLogeo
-            }
-        ]
-    });
-    var barraHerramientas = {
-        id: 'content-panel',
-        region: 'north', // this is what makes this panel into a region
-        // within the containing layout
-        layout: 'card',
-        margins: '0 0 0 0',
-        activeItem: 0,
-        border: false,
-        tbar: [{
-                xtype: 'button',
                 cls: 'x-btn-text-icon',
                 icon: 'img/buscar.png',
                 text: 'Parada mas Cercana',
-//            handler: function(){
-//                capturarPuntoReferencia();
-//            }
+                handler: function() {
+                    dibujarParadasMasCercanas();
+                }
+
             }, '-', {
-                xtype: 'button',
                 cls: 'x-btn-text-icon',
                 icon: 'img/buscar1.png',
                 text: 'Buscar ruta',
                 handler: showWinsearchRoute
             }, '-', {
-                xtype: 'button',
                 cls: 'x-btn-text-icon',
                 icon: 'img/buscar2.png',
-                text: 'Paradas por hora y sector',
+                text: 'Paradas por horarios',
                 handler: showWinsearchDateRoute
             }, '-', {
-                xtype: 'button',
                 cls: 'x-btn-text-icon',
                 icon: 'img/limpiar.png',
                 text: 'Limpiar Mapa',
@@ -87,18 +79,26 @@ Ext.onReady(function() {
 //                limpiarCapas();
 //            }
             }, '-', {
-                xtype: 'button',
                 cls: 'x-btn-text-icon',
                 icon: 'img/ayuda.png',
                 text: 'Ayuda',
                 handler: function() {
                     window.open("img/ayuda.pdf", "Ayuda KRADAC...");
                 }
-            }, '-', barraMenu]
+            }
+        ]
+    });
+    var iniciarSesion = Ext.create('Ext.button.Button', {
+        icon: 'img/user.gif',
+        text: 'Iniciar Sesión',
+        handler: ventanaLogeo,
+        scope: this,
+    });
 
-    };
 
-
+    var barraMenu = Ext.create('Ext.toolbar.Toolbar', {
+        width: '100%',
+        items: [menu, iniciarSesion]});
 
     var panelMenu = Ext.create('Ext.form.Panel', {
         region: 'north',
@@ -124,10 +124,8 @@ Ext.onReady(function() {
                                 '</section>'
                     }]
             },
-            barraHerramientas]
+            barraMenu]
     });
-
-
 
 
     Ext.create('Ext.container.Viewport', {

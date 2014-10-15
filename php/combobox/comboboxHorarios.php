@@ -1,3 +1,6 @@
+
+
+
 <?php
 
 include ('../../dll/config.php');
@@ -7,8 +10,9 @@ extract($_GET);
 if (!$mysqli = getConectionDb()) {
     echo "{success:false, msg: 'Error: No se ha podido conectar a la Base de Datos.<br>Compruebe su conexión a Internet.'}";
 } else {
+    $consultaSql = "SELECT id_ruta,hora FROM irbudata.ruta_hora where id_ruta='$id_ruta' group by hora asc";
 
-    $consultaSql = "SELECT id_ruta,hora FROM irbudata.ruta_hora group by hora asc";
+
 
     $result = $mysqli->query($consultaSql);
     $mysqli->close();
@@ -17,7 +21,6 @@ if (!$mysqli = getConectionDb()) {
         $objJson = "{data: [";
         while ($myrow = $result->fetch_assoc()) {
             $objJson .= "{"
-                    . "id:" . $myrow["id_ruta"] . ","
                     . "text:'" . $myrow["hora"] . "'},";
         }
 
